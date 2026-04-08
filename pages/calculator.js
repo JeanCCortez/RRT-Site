@@ -8,7 +8,7 @@ export default function Calculator() {
         <title>RRT - Cosmological Engine</title>
       </Head>
       
-      <main className="page-transition" style={{ paddingBottom: '4rem', margin: '0 auto', maxWidth: '1400px', width: '100%', padding: '4rem 2rem' }}>
+      <main className="page-transition" style={{ paddingBottom: '4rem', margin: '0 auto', width: '100%', padding: '4rem 2rem' }}>
         {/* Header Section */}
         <div className="volume-header" style={{ marginBottom: '3rem' }}>
           <h1 className="hero-title" style={{ color: '#10b981' }}>RRT Engine</h1>
