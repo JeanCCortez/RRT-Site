@@ -10,7 +10,7 @@ export default function Calculator() {
       
       <main className="page-transition" style={{ paddingBottom: '4rem' }}>
         {/* Content Container - same width as other pages */}
-        <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '4rem 2rem' }}>
+        <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '4rem 2rem', boxSizing: 'border-box' }}>
           {/* Header Section */}
           <div className="volume-header" style={{ marginBottom: '3rem' }}>
             <h1 className="hero-title" style={{ color: '#10b981' }}>RRT Engine</h1>
@@ -72,7 +72,7 @@ export default function Calculator() {
             padding: '2rem',
             backdropFilter: 'blur(10px)'
           }}>
-            <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '0 2rem' }}>
+            <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
               <h2 className="text-2xl font-bold mb-6 text-gray-900" style={{ color: '#10b981' }}>RRT Engine Calculator</h2>
               <p className="text-lg text-gray-700 mb-6">
                 Use the calculator below to explore calculations and audit astronomical data in real-time. The tool is fully interactive and responds to custom dataset uploads.
@@ -96,7 +96,7 @@ export default function Calculator() {
         </section>
 
         {/* Footer Section */}
-        <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '0 2rem' }}>
+        <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
           <section className="mt-16 pt-8 border-t border-gray-300">
             <p className="text-center text-gray-600 text-sm italic">
               RRT Engine v1.0 | Referential Relativity Theory © 2026 | Real-time calculations with Python Streamlit
