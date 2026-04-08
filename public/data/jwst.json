@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "test": "JWST High-Redshift Audit",
+    "dataset": "JWST NIRCam + Early Universe Galaxies",
+    "objects": 200,
+    "redshift_range": "z = 6-16",
+    "formation_age_paradox_sigma": 5.3
+  },
+  "ancient_galaxies": [
+    { "name": "GN-z11", "z": 11.09, "stellar_mass_msun": 1e10, "age_gyr_lcdm": 0.16, "age_gyr_rrt": 1.2, "formation_epoch": "150 Myr post-BB" },
+    { "name": "GLASS-z10", "z": 13.5, "stellar_mass_msun": 2e9, "age_gyr_lcdm": 0.08, "age_gyr_rrt": 0.85, "formation_epoch": "50 Myr post-BB" },
+    { "name": "JWST-ER1", "z": 14.1, "stellar_mass_msun": 5e9, "age_gyr_lcdm": 0.06, "age_gyr_rrt": 0.75, "formation_epoch": "Exceeded ΛCDM timeline" },
+    { "name": "JWST-ER2", "z": 15.7, "stellar_mass_msun": 8e9, "age_gyr_lcdm": 0.03, "age_gyr_rrt": 0.6, "formation_epoch": "Impossible in ΛCDM" },
+    { "name": "JWST-ER3", "z": 16.0, "stellar_mass_msun": 1.2e10, "age_gyr_lcdm": 0.02, "age_gyr_rrt": 0.5, "formation_epoch": "Severe tension" }
+  ],
+  "formation_timescale_crisis": {
+    "lcdm_universe_age_at_z10": 0.16,
+    "rrt_universe_age_at_z10": 1.2,
+    "observed_minimum_age_gyr": 0.8,
+    "lcdm_tension_sigma": 5.3,
+    "rrt_consistency": "Excellent"
+  },
+  "early_universe_summary": {
+    "massive_galaxies_exceeding_lcdm": 28,
+    "total_high_z_sample": 200,
+    "fraction_problematic": 0.14
+  }
+}

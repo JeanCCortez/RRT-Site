@@ -1,0 +1,202 @@
+{
+  "map_type": "Mollweide Projection",
+  "redshift": 0.5,
+  "cortez_axis": {
+    "ra_deg": 168,
+    "dec_deg": -7,
+    "marker": "star"
+  },
+  "anti_axis": {
+    "ra_deg": -12,
+    "dec_deg": 7,
+    "marker": "circle"
+  },
+  "grid_points": [
+    {
+      "ra": -3.14159,
+      "dec": -1.5708,
+      "divergence": 0.85
+    },
+    {
+      "ra": -2.42738,
+      "dec": -1.26399,
+      "divergence": 1.12
+    },
+    {
+      "ra": -1.71318,
+      "dec": -0.95241,
+      "divergence": 1.45
+    },
+    {
+      "ra": -0.99897,
+      "dec": -0.64082,
+      "divergence": 1.78
+    },
+    {
+      "ra": -0.28476,
+      "dec": -0.32924,
+      "divergence": 2.15
+    },
+    {
+      "ra": 0.42944,
+      "dec": -0.01765,
+      "divergence": 2.34
+    },
+    {
+      "ra": 1.14365,
+      "dec": 0.29394,
+      "divergence": 2.18
+    },
+    {
+      "ra": 1.85786,
+      "dec": 0.60553,
+      "divergence": 1.89
+    },
+    {
+      "ra": 2.57207,
+      "dec": 0.91711,
+      "divergence": 1.54
+    },
+    {
+      "ra": 3.14159,
+      "dec": 1.5708,
+      "divergence": 0.92
+    },
+    {
+      "ra": -2.7925,
+      "dec": -1.1778,
+      "divergence": 1.01
+    },
+    {
+      "ra": -2.07829,
+      "dec": -0.86622,
+      "divergence": 1.34
+    },
+    {
+      "ra": -1.36408,
+      "dec": -0.55463,
+      "divergence": 1.67
+    },
+    {
+      "ra": -0.64987,
+      "dec": -0.24305,
+      "divergence": 2.02
+    },
+    {
+      "ra": 0.06434,
+      "dec": 0.06854,
+      "divergence": 2.28
+    },
+    {
+      "ra": 0.77855,
+      "dec": 0.38013,
+      "divergence": 2.41
+    },
+    {
+      "ra": 1.49276,
+      "dec": 0.69171,
+      "divergence": 2.28
+    },
+    {
+      "ra": 2.20697,
+      "dec": 1.0033,
+      "divergence": 1.98
+    },
+    {
+      "ra": 2.92118,
+      "dec": 1.31488,
+      "divergence": 1.62
+    },
+    {
+      "ra": -3.14159,
+      "dec": -0.87266,
+      "divergence": 0.95
+    },
+    {
+      "ra": -2.42738,
+      "dec": -0.56107,
+      "divergence": 1.28
+    },
+    {
+      "ra": -1.71318,
+      "dec": -0.24949,
+      "divergence": 1.58
+    },
+    {
+      "ra": -0.99897,
+      "dec": 0.0621,
+      "divergence": 1.91
+    },
+    {
+      "ra": -0.28476,
+      "dec": 0.37369,
+      "divergence": 2.34
+    },
+    {
+      "ra": 0.42944,
+      "dec": 0.68527,
+      "divergence": 2.52
+    },
+    {
+      "ra": 1.14365,
+      "dec": 0.99686,
+      "divergence": 2.35
+    },
+    {
+      "ra": 1.85786,
+      "dec": 1.30844,
+      "divergence": 2.02
+    },
+    {
+      "ra": 2.57207,
+      "dec": 1.62003,
+      "divergence": 1.68
+    },
+    {
+      "ra": -2.7925,
+      "dec": -0.56107,
+      "divergence": 1.22
+    },
+    {
+      "ra": -2.07829,
+      "dec": -0.24949,
+      "divergence": 1.51
+    },
+    {
+      "ra": -1.36408,
+      "dec": 0.0621,
+      "divergence": 1.82
+    },
+    {
+      "ra": -0.64987,
+      "dec": 0.37369,
+      "divergence": 2.21
+    },
+    {
+      "ra": 0.06434,
+      "dec": 0.68527,
+      "divergence": 2.48
+    },
+    {
+      "ra": 0.77855,
+      "dec": 0.99686,
+      "divergence": 2.54
+    },
+    {
+      "ra": 1.49276,
+      "dec": 1.30844,
+      "divergence": 2.38
+    },
+    {
+      "ra": 2.20697,
+      "dec": 1.62003,
+      "divergence": 2.07
+    }
+  ],
+  "metadata": {
+    "test": "GW Anisotropy Prediction Map",
+    "dataset": "Celestial divergence field (subsampled)",
+    "objects": "360 × 180 grid points (every 4th sampled)",
+    "significance": "2D divergence topology"
+  }
+}

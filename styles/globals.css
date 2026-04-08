@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+body { margin: 0; padding: 0; background-color: transparent; color: #e4e4e7; font-family: 'Lora', serif; line-height: 1.85; min-height: 100vh; }
+h1, h2, h3, h4, .nav-text { font-family: 'Inter', sans-serif; color: #ffffff; margin-top: 2.5rem; }
+a { color: #fbbf24; text-decoration: none; transition: 0.3s ease; }
+a:hover { color: #f59e0b; text-shadow: 0 0 10px rgba(251, 191, 36, 0.4); }
+.container { max-width: 850px; margin: 0 auto; padding: 4rem 2rem; }
+.glass-panel { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 2.5rem; margin: 3rem 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; text-align: center; margin-bottom: 1rem; background: linear-gradient(135deg, #fbbf24, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-subtitle { text-align: center; font-size: 1.2rem; color: #a1a1aa; margin-bottom: 4rem; font-family: 'Inter', sans-serif; }
+p { font-size: 1.15rem; text-align: justify; margin-bottom: 1.5rem; }
+
+/* Navbar e Navegação */
+.navbar { position: sticky; top: 0; z-index: 100; background: rgba(5, 5, 8, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 1rem 0; display: flex; justify-content: center; gap: 2.5rem; }
+.nav-link { color: #a1a1aa; text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.3s ease; padding: 0.5rem 1rem; border-radius: 8px; }
+.nav-link:hover { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+
+/* Transições Suaves */
+.page-transition { animation: fadeIn 0.6s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* FAQ Styles */
+.faq-container { margin-top: 5rem; }
+.faq-item { border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem 0; }
+.faq-question { font-family: 'Inter', sans-serif; font-size: 1.2rem; color: #ffffff; font-weight: 600; margin-bottom: 0.5rem; }
+.faq-answer { color: #a1a1aa; font-size: 1.05rem; line-height: 1.7; }
+
+/* Temas Dinâmicos dos Volumes */
+.theme-vol1 { --theme-color: #fbbf24; --theme-glow: rgba(251, 191, 36, 0.4); }
+.theme-vol2 { --theme-color: #10b981; --theme-glow: rgba(16, 185, 129, 0.4); }
+.theme-vol3 { --theme-color: #a855f7; --theme-glow: rgba(168, 85, 247, 0.4); }
+.theme-vol4 { --theme-color: #ef4444; --theme-glow: rgba(239, 68, 68, 0.4); }
+
+.vol-subtitle { color: var(--theme-color); font-size: 1.8rem; margin-bottom: 2rem; font-family: 'Lora', serif; font-weight: 400; text-align: center; }
+.faq-question { font-family: 'Inter', sans-serif; font-size: 1.2rem; color: #ffffff; font-weight: 600; margin-bottom: 0.8rem; margin-top: 1.5rem; }
+.faq-answer { color: #a1a1aa; font-size: 1.05rem; line-height: 1.7; text-align: justify; padding-left: 1rem; border-left: 2px solid #fbbf24; }
+
+/* Legacy Tailwind Overrides for Dark Mode & Glassmorphism */
+.bg-white, .bg-gray-50, .bg-blue-50, .bg-gray-100, .bg-gray-800 {
+  background: rgba(255, 255, 255, 0.02) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+  border-radius: 12px !important;
+}
+.text-gray-900, .text-gray-800, .text-gray-700, .text-black, .text-blue-900 {
+  color: var(--theme-color, #ffffff) !important;
+}
+.text-gray-500, .text-gray-600 {
+  color: #a1a1aa !important;
+}
+.border-gray-200, .border-gray-300, .border-gray-400, .border-gray-800 {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+.shadow-sm, .shadow-inner {
+  box-shadow: none !important;
+}

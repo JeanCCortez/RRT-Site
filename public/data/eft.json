@@ -1,0 +1,20 @@
+[
+  {
+    "regime": "LHC (CERN)",
+    "pot": -1.0,
+    "chi_pct": 0.0000,
+    "label": "Micro (Phase Saturation)"
+  },
+  {
+    "regime": "LAGEOS-2 Sat",
+    "pot": -0.0000000006,
+    "chi_pct": 0.0000,
+    "label": "Macro (Baryonic Shielding)"
+  },
+  {
+    "regime": "Quasars (SDSS)",
+    "pot": -0.000000000000001,
+    "chi_pct": 99.9999,
+    "label": "Cosmological (Viscous)"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "test": "Pantheon+ Gradient Audit",
+    "dataset": "Pantheon+ + SH0ES (2022)",
+    "objects": 800,
+    "significant_deviation_sigma": 2.4,
+    "hubble_constant_rrt": 73.8
+  },
+  "supernovae": [
+    { "z": 0.01, "distance_modulus": 33.2, "uncertainty": 0.15, "survey": "local" },
+    { "z": 0.05, "distance_modulus": 35.8, "uncertainty": 0.12, "survey": "sdss" },
+    { "z": 0.10, "distance_modulus": 37.5, "uncertainty": 0.14, "survey": "sdss" },
+    { "z": 0.20, "distance_modulus": 39.2, "uncertainty": 0.13, "survey": "pantheon" },
+    { "z": 0.50, "distance_modulus": 41.8, "uncertainty": 0.10, "survey": "pantheon" },
+    { "z": 1.00, "distance_modulus": 43.6, "uncertainty": 0.12, "survey": "hst" }
+  ],
+  "cosmological_parameters": {
+    "h0_lcdm": 67.4,
+    "h0_rrt_prediction": 73.8,
+    "tension_sigma": 2.4,
+    "w0": -1.0
+  }
+}

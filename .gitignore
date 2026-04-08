@@ -1,0 +1,9 @@
+﻿node_modules/
+.next/
+banco_dados/
+public/midias/
+*.fits
+*.mp4
+*.m4a
+*.sst
+*.node

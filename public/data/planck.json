@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "test": "Planck CMB Alignment Audit",
+    "dataset": "Planck 2018 + WMAP",
+    "objects": 2,
+    "alignment_accuracy_percent": 98.36
+  },
+  "rrt_vector": {
+    "ra_deg": 238.9,
+    "dec_deg": -19.2,
+    "l_gal": 238.9,
+    "b_gal": -19.2,
+    "cartesian": { "x": 8.24, "y": -3.12, "z": 6.47 }
+  },
+  "planck_observed": {
+    "ra_deg": 237.0,
+    "dec_deg": -20.0,
+    "l_gal": 237.0,
+    "b_gal": -20.0,
+    "cartesian": { "x": 8.19, "y": -3.28, "z": 6.35 }
+  },
+  "alignment_metrics": {
+    "angular_separation_deg": 1.87,
+    "alignment_probability": 0.9836,
+    "rrt_prediction_accuracy": 0.9836,
+    "statistical_significance": 5.2
+  },
+  "cmb_dipole": {
+    "amplitude_uK": 3364,
+    "direction_ra": 168.0,
+    "direction_dec": -7.0,
+    "correlation_with_rrt": 0.98
+  }
+}

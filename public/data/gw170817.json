@@ -1,0 +1,89 @@
+{
+  "target_event": {
+    "name": "GW170817 / NGC 4993",
+    "ra": 197.45,
+    "dec": -23.38,
+    "z": 0.0099,
+    "dist_em_obs": 40.7,
+    "dist_gw_obs": 40.0,
+    "uncertainty": 8.0
+  },
+  "synthetic_events": [
+    {
+      "z": 0.005,
+      "dist_rrt": 2.16,
+      "dist_lcdm": 2.15,
+      "divergence_pct": 0.46,
+      "theta_deg": 45.2
+    },
+    {
+      "z": 0.171,
+      "dist_rrt": 73.4,
+      "dist_lcdm": 72.9,
+      "divergence_pct": 0.69,
+      "theta_deg": 128.7
+    },
+    {
+      "z": 0.338,
+      "dist_rrt": 142.8,
+      "dist_lcdm": 141.5,
+      "divergence_pct": 0.92,
+      "theta_deg": 92.3
+    },
+    {
+      "z": 0.504,
+      "dist_rrt": 206.4,
+      "dist_lcdm": 204.1,
+      "divergence_pct": 1.13,
+      "theta_deg": 67.1
+    },
+    {
+      "z": 0.671,
+      "dist_rrt": 261.7,
+      "dist_lcdm": 258.5,
+      "divergence_pct": 1.24,
+      "theta_deg": 155.8
+    },
+    {
+      "z": 0.838,
+      "dist_rrt": 308.2,
+      "dist_lcdm": 304.1,
+      "divergence_pct": 1.35,
+      "theta_deg": 34.5
+    },
+    {
+      "z": 1.004,
+      "dist_rrt": 346.9,
+      "dist_lcdm": 341.8,
+      "divergence_pct": 1.49,
+      "theta_deg": 172.2
+    },
+    {
+      "z": 1.171,
+      "dist_rrt": 378.3,
+      "dist_lcdm": 372.1,
+      "divergence_pct": 1.67,
+      "theta_deg": 56.9
+    },
+    {
+      "z": 1.338,
+      "dist_rrt": 403.6,
+      "dist_lcdm": 396.2,
+      "divergence_pct": 1.86,
+      "theta_deg": 103.4
+    },
+    {
+      "z": 1.5,
+      "dist_rrt": 423.8,
+      "dist_lcdm": 415.1,
+      "divergence_pct": 2.11,
+      "theta_deg": 145.7
+    }
+  ],
+  "metadata": {
+    "test": "GW170817 Consistency Audit",
+    "dataset": "Multi-messenger gravitational wave events",
+    "objects": "10 synthetic GW events (z: 0.005-1.5)",
+    "significance": "Phase aberration vs cosmological distance"
+  }
+}

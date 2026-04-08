@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "test": "Phase Drag Magnitude Audit",
+    "dataset": "SDSS DR16Q + Redshift Bins",
+    "objects": 500,
+    "significant_deviation_sigma": 4.2,
+    "phase_drag_effect_detected": true
+  },
+  "redshift_bins": [
+    { "z_min": 0.5, "z_max": 1.0, "magnitude_shift_rrt": 0.08, "magnitude_shift_lcdm": 0.0, "objects": 45, "significance": 2.1 },
+    { "z_min": 1.0, "z_max": 1.5, "magnitude_shift_rrt": 0.15, "magnitude_shift_lcdm": 0.0, "objects": 62, "significance": 3.4 },
+    { "z_min": 1.5, "z_max": 2.0, "magnitude_shift_rrt": 0.23, "magnitude_shift_lcdm": 0.0, "objects": 58, "significance": 4.2 },
+    { "z_min": 2.0, "z_max": 2.5, "magnitude_shift_rrt": 0.31, "magnitude_shift_lcdm": 0.0, "objects": 51, "significance": 4.8 },
+    { "z_min": 2.5, "z_max": 3.0, "magnitude_shift_rrt": 0.38, "magnitude_shift_lcdm": 0.0, "objects": 42, "significance": 3.9 }
+  ],
+  "phase_drag_parameters": {
+    "drag_coefficient": 0.38,
+    "drag_redshift_dependence": "linear",
+    "visible_at_z_gt": 1.2,
+    "cumulative_effect_at_z_3": "0.38 magnitudes"
+  }
+}

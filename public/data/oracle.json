@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "test": "Interactive RRT Oracle",
+    "dataset": "User-Defined Calculator",
+    "objects": "Real-Time Lookup Tables",
+    "pedagogical_value": "High",
+    "model_falsifiability": "Demonstrated"
+  },
+  "calculator_modes": [
+    {
+      "mode": "Redshift Input",
+      "input": "z",
+      "outputs": {
+        "age_universe_gyr": "RRT calculated age at that redshift",
+        "age_universe_lcdm_gyr": "ΛCDM age prediction",
+        "distance_proper_mpc": "Physical distance",
+        "divergence_percent": "RRT vs ΛCDM difference"
+      },
+      "example": { "z": 5.0, "age_rrt": 0.9, "age_lcdm": 0.3, "divergence": 200 }
+    },
+    {
+      "mode": "Mass Input",
+      "input": "stellar_mass_msun",
+      "outputs": {
+        "formation_epoch_z_rrt": "When RRT predicts formation",
+        "formation_epoch_z_lcdm": "When ΛCDM predicts formation",
+        "available_time_lcdm_gyr": "Growth budget in ΛCDM",
+        "growth_status": "Possible/Impossible"
+      },
+      "example": { "mass": 1e10, "z_rrt": 15, "z_lcdm": 3, "status": "Impossible in ΛCDM" }
+    },
+    {
+      "mode": "Distance Input",
+      "input": "luminosity_distance_mpc",
+      "outputs": {
+        "redshift_rrt": "RRT inferred z",
+        "redshift_lcdm": "ΛCDM inferred z",
+        "inference_divergence_percent": "Difference in redshift calculation"
+      },
+      "example": { "d_lum": 5000, "z_rrt": 1.2, "z_lcdm": 1.5, "divergence": "20%" }
+    }
+  ],
+  "lookup_tables": {
+    "redshift_to_age": [
+      { "z": 0.0, "age_rrt_gyr": 26.0, "age_lcdm_gyr": 13.8 },
+      { "z": 1.0, "age_rrt_gyr": 5.2, "age_lcdm_gyr": 6.1 },
+      { "z": 5.0, "age_rrt_gyr": 0.9, "age_lcdm_gyr": 0.3 },
+      { "z": 10.0, "age_rrt_gyr": 0.4, "age_lcdm_gyr": 0.05 }
+    ],
+    "mass_to_formation_epoch": [
+      { "mass_msun": 1e9, "z_formation_rrt": 20, "z_formation_lcdm": 6 },
+      { "mass_msun": 1e10, "z_formation_rrt": 18, "z_formation_lcdm": 4 },
+      { "mass_msun": 1e11, "z_formation_rrt": 12, "z_formation_lcdm": 2 }
+    ]
+  },
+  "user_interaction": {
+    "allows_custom_inputs": true,
+    "real_time_comparison": true,
+    "graphical_overlay": "RRT vs ΛCDM curves",
+    "export_results": true,
+    "pedagogical_intent": "Demonstrate falsifiability through direct calculation"
+  }
+}

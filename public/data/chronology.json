@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "test": "LCDM Chronology Stress Test",
+    "dataset": "Multi-Messenger Timescales",
+    "objects": 15,
+    "significant_deviation_sigma": 3.7,
+    "chronology_crisis_detected": true
+  },
+  "cosmic_timelines": [
+    { "epoch": "Recombination", "z": 1089, "age_gyr_lcdm": 0.00038, "age_gyr_rrt": 0.18, "observable": "CMB" },
+    { "epoch": "Reionization", "z": 7, "age_gyr_lcdm": 0.09, "age_gyr_rrt": 0.85, "observable": "JWST" },
+    { "epoch": "First Galaxies", "z": 15, "age_gyr_lcdm": 0.02, "age_gyr_rrt": 0.5, "observable": "JWST-ERS" },
+    { "epoch": "Quasar Era", "z": 6, "age_gyr_lcdm": 0.15, "age_gyr_rrt": 1.1, "observable": "SDSS" },
+    { "epoch": "Galaxy Clusters", "z": 2, "age_gyr_lcdm": 3.3, "age_gyr_rrt": 5.8, "observable": "X-ray" },
+    { "epoch": "Local Universe", "z": 0, "age_gyr_lcdm": 13.8, "age_gyr_rrt": 26.0, "observable": "Stellar" }
+  ],
+  "chronology_tensions": {
+    "jwst_ancient_galaxies_tension": 5.3,
+    "cmb_lensing_tension": 2.4,
+    "hubble_tension": 4.4,
+    "total_accumulated_tension": 3.7
+  },
+  "rrt_chronology_resolution": {
+    "older_universe_age_gyr": 26.0,
+    "additional_causal_time": 12.2,
+    "all_tensions_resolved": true
+  }
+}
