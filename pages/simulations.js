@@ -723,6 +723,20 @@ export default function Simulations() {
   const [expandedCoreAudits, setExpandedCoreAudits] = React.useState(true);
   const [expandedFalsificationTests, setExpandedFalsificationTests] = React.useState(true);
 
+  // Auto-close sidebars on mobile for full simulation view
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== 'undefined' && window.innerWidth <= 640) {
+        setIsLeftPanelOpen(false);
+        setIsRightPanelOpen(false);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const descriptions = {
     sdss: {
       title: '1. SDSS DR16Q Anisotropy Audit',
@@ -814,7 +828,20 @@ export default function Simulations() {
       <Head><title>RRT - Simulation Engine</title></Head>
       
       {/* LEFT SIDEBAR - Navigation & Test Selection */}
-      <div style={{ position: 'absolute', left: 0, top: 0, height: '100vh', width: isLeftPanelOpen ? '320px' : '60px', background: 'rgba(5,5,8,0.95)', borderRight: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', transition: 'all 0.3s ease', zIndex: 15, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ 
+        position: 'absolute', 
+        left: 0, 
+        top: 0, 
+        height: '100vh', 
+        width: isLeftPanelOpen ? 'clamp(60px, 25vw, 320px)' : '60px', 
+        background: 'rgba(5,5,8,0.95)', 
+        borderRight: '1px solid rgba(255,255,255,0.1)', 
+        backdropFilter: 'blur(10px)', 
+        transition: 'all 0.3s ease', 
+        zIndex: 15, 
+        display: 'flex', 
+        flexDirection: 'column' 
+      }}>
         
         {/* Toggle Button */}
         <button onClick={() => setIsLeftPanelOpen(!isLeftPanelOpen)} style={{ background: 'none', border: 'none', color: '#fbbf24', cursor: 'pointer', fontSize: '1.5rem', padding: '1rem', alignSelf: 'flex-end', transition: '0.2s' }}>
@@ -952,7 +979,20 @@ export default function Simulations() {
       </div>
 
       {/* RIGHT SIDEBAR - Information Panel */}
-      <div style={{ position: 'absolute', right: 0, top: 0, height: '100vh', width: isRightPanelOpen ? '340px' : '60px', background: 'rgba(5,5,8,0.95)', borderLeft: `1px solid ${info.color}`, backdropFilter: 'blur(10px)', transition: 'all 0.3s ease', zIndex: 15, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ 
+        position: 'absolute', 
+        right: 0, 
+        top: 0, 
+        height: '100vh', 
+        width: isRightPanelOpen ? 'clamp(60px, 25vw, 340px)' : '60px', 
+        background: 'rgba(5,5,8,0.95)', 
+        borderLeft: `1px solid ${info.color}`, 
+        backdropFilter: 'blur(10px)', 
+        transition: 'all 0.3s ease', 
+        zIndex: 15, 
+        display: 'flex', 
+        flexDirection: 'column' 
+      }}>
         
         {/* Toggle Button */}
         <button onClick={() => setIsRightPanelOpen(!isRightPanelOpen)} style={{ background: 'none', border: 'none', color: info.color, cursor: 'pointer', fontSize: '1.5rem', padding: '1rem', alignSelf: 'flex-start', transition: '0.2s' }}>
@@ -986,7 +1026,13 @@ export default function Simulations() {
         )}
       </div>
 
-      <Canvas camera={{ position: [0, 3, 20], fov: 50 }} style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0 }}>
+      <Canvas camera={{ position: [0, 3, 20], fov: 50 }} style={{
+        width: '100vw',
+        height: '100vh',
+        position: 'absolute',
+        top: 0,
+        left: 0
+      }}>
         <color attach="background" args={['#000000']} />
         <ambientLight intensity={0.8} />
         <pointLight position={[15, 10, 15]} intensity={1.2} />
