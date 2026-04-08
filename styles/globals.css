@@ -55,3 +55,188 @@ p { font-size: 1.15rem; text-align: justify; margin-bottom: 1.5rem; }
 .shadow-sm, .shadow-inner {
   box-shadow: none !important;
 }
+
+/* ===== RESPONSIVIDADE MOBILE & TABLET ===== */
+
+/* SMARTPHONE (até 640px) */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    max-width: 100%;
+    padding: 2rem 1rem;
+  }
+
+  /* Navbar ajustado para mobile */
+  .navbar {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 0.75rem 0.5rem;
+    justify-content: space-around;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    letter-spacing: 0.5px;
+  }
+
+  /* Títulos reduzidos */
+  .hero-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    color: #a1a1aa;
+  }
+
+  /* Subtítulos dos volumes */
+  .vol-subtitle {
+    font-size: 1.3rem;
+  }
+
+  /* Parágrafos menores */
+  p {
+    font-size: 1rem;
+    text-align: left;
+  }
+
+  /* Glass panel com menos padding */
+  .glass-panel {
+    padding: 1.5rem 1rem;
+    margin: 2rem 0;
+  }
+
+  /* FAQ em mobile */
+  .faq-item {
+    padding: 1rem 0;
+  }
+
+  .faq-question {
+    font-size: 1rem;
+  }
+
+  .faq-answer {
+    font-size: 0.95rem;
+  }
+
+  /* Grids para 1 coluna */
+  .grid-cols-1,
+  .grid-cols-2,
+  .grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  /* Tabelas responsivas em mobile */
+  table {
+    font-size: 0.85rem;
+  }
+
+  table th,
+  table td {
+    padding: 0.5rem 0.3rem !important;
+  }
+
+  /* Heading sizes mobile */
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 4vw, 2rem);
+  }
+
+  h3 {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+  }
+}
+
+/* TABLET (641px até 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    max-width: 100%;
+    padding: 3rem 1.5rem;
+  }
+
+  /* Navbar com gap reduzido */
+  .navbar {
+    gap: 1.5rem;
+    padding: 1rem 0.75rem;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  /* Títulos ajustados */
+  .hero-title {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .vol-subtitle {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1.05rem;
+  }
+
+  /* Glass panel */
+  .glass-panel {
+    padding: 2rem 1.5rem;
+  }
+
+  /* Grids 2 colunas em tablet */
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .grid-cols-1 {
+    grid-template-columns: 1fr !important;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+  }
+
+  h3 {
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  }
+}
+
+/* DESKTOP (acima de 1024px) */
+@media (min-width: 1025px) {
+  .container {
+    max-width: 850px;
+    padding: 4rem 2rem;
+  }
+
+  .navbar {
+    gap: 2.5rem;
+  }
+
+  .nav-link {
+    font-size: 0.95rem;
+  }
+}
+
+/* Orientação LANDSCAPE em mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-subtitle {
+    margin-bottom: 1.5rem;
+  }
+
+  .container {
+    padding: 1.5rem 1rem;
+  }
+}
