@@ -413,47 +413,25 @@ export default function Volume3() {
         <section className="mb-16 mt-16">
           <h2 className="text-3xl font-bold mb-8 text-gray-900 border-b-2 border-gray-800 pb-2">Multimedia Resources</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Podcast */}
-            <div className="glass-panel" style={{ padding: '2rem', borderRadius: '8px' }}>
+          <div className="space-y-8">
+            {/* YouTube Video */}
+            <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#000' }}>
+              <h3 style={{ color: 'var(--theme-color)', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold', padding: '1rem 1rem 0 1rem' }}>▶️ Dynamic Explanation</h3>
+              <p style={{ color: '#d1d5db', marginBottom: '1.5rem', fontSize: '0.9rem', lineHeight: '1.6', padding: '0 1rem' }}>
+                A visual exploration of the experimental evidence, cosmological tests, and causal mechanisms that validate RRT. Excellent for understanding how theory connects to real observational data.
+              </p>
+              <div style={{ padding: '1rem' }}>
+                <iframe width="100%" height="315" src="https://www.youtube.com/embed/U0elb8VDIro?si=JxVAgBVHeWn5Ih0a" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+              </div>
+            </div>
+
+            {/* Spotify Podcast */}
+            <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden' }}>
               <h3 style={{ color: 'var(--theme-color)', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>🎙️ Debate on Volume III</h3>
               <p style={{ color: '#d1d5db', marginBottom: '1.5rem', fontSize: '0.9rem', lineHeight: '1.6' }}>
                 An in-depth discussion of the experimental validations, causal foundations, and philosophical implications of Referential Relativity Theory covered in Volume III. Perfect for exploring the ontological aspects of RRT.
               </p>
-              <audio 
-                controls 
-                style={{
-                  width: '100%',
-                  marginTop: '1rem',
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  borderRadius: '6px',
-                  padding: '0.5rem'
-                }}
-              >
-                <source src="/midias/podcast_volume3.m4a" type="audio/mp4" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-
-            {/* Video */}
-            <div className="glass-panel" style={{ padding: '2rem', borderRadius: '8px' }}>
-              <h3 style={{ color: 'var(--theme-color)', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>▶️ Dynamic Explanation</h3>
-              <p style={{ color: '#d1d5db', marginBottom: '1.5rem', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                A visual exploration of the experimental evidence, cosmological tests, and causal mechanisms that validate RRT. Excellent for understanding how theory connects to real observational data.
-              </p>
-              <video 
-                controls 
-                style={{
-                  width: '100%',
-                  marginTop: '1rem',
-                  backgroundColor: '#000',
-                  borderRadius: '6px',
-                  maxHeight: '400px'
-                }}
-              >
-                <source src="/midias/video_volume3.mp4" type="video/mp4" />
-                Your browser does not support the video element.
-              </video>
+              <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', marginTop: '0px' }} src="https://open.spotify.com/embed/episode/3W3z4zYHpxsmILxccTM6Dg?utm_source=generator" width="100%" height="352" frameBorder="0" allowFullScreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
           </div>
         </section>

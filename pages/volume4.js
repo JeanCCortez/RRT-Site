@@ -515,47 +515,25 @@ export default function Volume4() {
         <section className="mb-16 mt-16">
           <h2 className="text-3xl font-bold mb-8 text-gray-900 border-b-2 border-gray-800 pb-2">Multimedia Resources</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Podcast */}
-            <div className="glass-panel" style={{ padding: '2rem', borderRadius: '8px' }}>
+          <div className="space-y-8">
+            {/* YouTube Video */}
+            <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', backgroundColor: '#000' }}>
+              <h3 style={{ color: 'var(--theme-color)', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold', padding: '1rem 1rem 0 1rem' }}>▶️ Dynamic Explanation</h3>
+              <p style={{ color: '#d1d5db', marginBottom: '1.5rem', fontSize: '0.9rem', lineHeight: '1.6', padding: '0 1rem' }}>
+                An engaging visualization of the Critical Field Tests, future experimental strategies, and the broader implications of RRT for fundamental physics. Perfect for understanding how RRT will be empirically tested.
+              </p>
+              <div style={{ padding: '1rem' }}>
+                <iframe width="100%" height="315" src="https://www.youtube.com/embed/rn7q1mt7m0c?si=VmI6VRL-NBw8Xlcb" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+              </div>
+            </div>
+
+            {/* Spotify Podcast */}
+            <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden' }}>
               <h3 style={{ color: 'var(--theme-color)', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>🎙️ Debate on Volume IV</h3>
               <p style={{ color: '#d1d5db', marginBottom: '1.5rem', fontSize: '0.9rem', lineHeight: '1.6' }}>
                 A comprehensive dialogue on the Critical Field Tests, experimental predictions, and future directions of Referential Relativity Theory as presented in Volume IV. Essential for understanding the testability and falsifiability of RRT.
               </p>
-              <audio 
-                controls 
-                style={{
-                  width: '100%',
-                  marginTop: '1rem',
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  borderRadius: '6px',
-                  padding: '0.5rem'
-                }}
-              >
-                <source src="/midias/podcast_volume4.m4a" type="audio/mp4" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-
-            {/* Video */}
-            <div className="glass-panel" style={{ padding: '2rem', borderRadius: '8px' }}>
-              <h3 style={{ color: 'var(--theme-color)', marginBottom: '1rem', fontSize: '1.2rem', fontWeight: 'bold' }}>▶️ Dynamic Explanation</h3>
-              <p style={{ color: '#d1d5db', marginBottom: '1.5rem', fontSize: '0.9rem', lineHeight: '1.6' }}>
-                An engaging visualization of the Critical Field Tests, future experimental strategies, and the broader implications of RRT for fundamental physics. Perfect for understanding how RRT will be empirically tested.
-              </p>
-              <video 
-                controls 
-                style={{
-                  width: '100%',
-                  marginTop: '1rem',
-                  backgroundColor: '#000',
-                  borderRadius: '6px',
-                  maxHeight: '400px'
-                }}
-              >
-                <source src="/midias/video_volume4.mp4" type="video/mp4" />
-                Your browser does not support the video element.
-              </video>
+              <iframe data-testid="embed-iframe" style={{ borderRadius: '12px', marginTop: '0px' }} src="https://open.spotify.com/embed/episode/6fmdk5iDwNI37V5JJfeMpm?utm_source=generator" width="100%" height="352" frameBorder="0" allowFullScreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             </div>
           </div>
         </section>
