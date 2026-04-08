@@ -61,7 +61,7 @@ p { font-size: 1.15rem; text-align: justify; margin-bottom: 1.5rem; }
 /* SMARTPHONE (até 640px) */
 @media (max-width: 640px) {
   body {
-    font-size: 14px;
+    font-size: 13px;
   }
   
   .container {
@@ -108,6 +108,47 @@ p { font-size: 1.15rem; text-align: justify; margin-bottom: 1.5rem; }
   .glass-panel {
     padding: 1.5rem 1rem;
     margin: 2rem 0;
+  }
+
+  /* Boxes de equações - CRÍTICO PARA MOBILE */
+  div[style*="overflow-x-auto"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Reduzir font-size de equações LaTeX */
+  .katex {
+    font-size: 0.75em !important;
+  }
+
+  .katex-display {
+    font-size: 0.8em !important;
+    margin: 0.5rem 0 !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  /* Tamanho de texto em containers de equações */
+  p.text-lg,
+  h5.text-lg,
+  ul.text-lg,
+  li.text-lg {
+    font-size: 0.95rem !important;
+  }
+
+  /* Melhor quebra de word para conteúdo */
+  div, p, h4, h5 {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Garantir que divs com shadow-inner scrollam bem */
+  .shadow-inner {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* FAQ em mobile */
