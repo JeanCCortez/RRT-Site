@@ -1,9 +1,19 @@
-import Navbar from './Navbar';
+import Link from 'next/link';
 
 export default function Layout({ children }) {
   return (
     <>
-      <Navbar />
+      <nav className="navbar">
+        <Link href="/" className="nav-link">Home</Link>
+        <Link href="/volume1" className="nav-link">Volume I</Link>
+        <Link href="/volume2" className="nav-link">Volume II</Link>
+        <Link href="/volume3" className="nav-link">Volume III</Link>
+        <Link href="/volume4" className="nav-link">Volume IV</Link>
+        <Link href="/methodology" className="nav-link">Computational Audits</Link>
+        <Link href="/predictions" className="nav-link">Predictions & Falsifiability</Link>
+        <Link href="/calculator" className="nav-link" style={{ color: '#10b981', textShadow: '0 0 10px rgba(16, 185, 129, 0.5)', whiteSpace: 'nowrap' }}>RRT Engine</Link>
+        <Link href="/simulations" className="nav-link" style={{ color: '#ef4444', textShadow: '0 0 10px rgba(239, 68, 68, 0.5)', whiteSpace: 'nowrap' }}>Live Simulations</Link>
+      </nav>
       <main className="page-transition">
         {children}
       </main>
