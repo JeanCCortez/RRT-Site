@@ -1,0 +1,156 @@
+
+--- PAGE 1 ---
+Deterministic Falsification Tests and Algorithmic Bias
+Mitigation in the Upcoming Survey Era: A Dual-Scenario
+Approach for the Referential Relativity Theory (RRT)
+Jean Coutinho Cortez
+Independent Researcher
+April 15, 2026
+Abstract
+Contemporary cosmology (ΛCDM) faces profound epistemological crises, increasingly
+relying on an unobservable “dark sector” to reconcile galactic dynamics with cosmic ex-
+pansion. In this paper, I establish a strict, deterministic predictive agenda for the next
+generation of astronomical catalogs (LSST, Gaia DR4, Euclid, CMB-S4, DESI, and LIGO
+O4), grounded in the fluid mechanics of the vacuum as described by my Referential Rela-
+tivity Theory (RRT). Recognizing that modern data processing pipelines often absorb real
+directional variances and reclassify them as artificial noise to preserve the premise of a
+perfectly isotropic universe, I formulate my predictions as “Dual Scenarios”. For each obser-
+vatory, I quantitatively establish: (A) the raw geometric and kinematic signatures expected
+from the causal anisotropic gradient, and (B) the specific algorithmic artifacts and physical
+conservation violations that will inevitably emerge if the academic community forces these
+new data to fit conventional dark matter models.
+1 Phenomenological Foundation and Algorithmic Bias
+My theory replaces the geometric singularity of the Big Bang with a Spontaneous Symmetry
+Breaking (SSB) that grants time an active, directional tensor structure (T ). The interaction
+µν
+between this causal flow and matter is governed by the Baryonic Neutrality Principle (BNP).
+Thisprincipledictatesthatinhigh-densityregions(suchasourSolarSystem),temporalcoupling
+saturates, perfectly recovering Einstein’s local General Relativity. However, in the deep cosmic
+vacuum (Phase 3), spacetime acts as a viscous fluid governed by the universal impedance β =
+0.028006.
+The Variance Absorption Mechanism: The standard cosmological model habitually treats
+structural anisotropies as “noise.” Calibration algorithms operate under the assumption that
+the universe must be isotropic. Mathematically, they minimize residuals by forcing the real
+anisotropic term (∆ ) to zero. Similarly, early engineering notes from the LSST (Data Pre-
+aniso
+view 1) already confess to systemic calibration flaws, such as over-scaling Right Ascension errors
+by the cosine of declination and failing aperture corrections for non-point structures.
+• Scenario A (RAW Data): Unbiased photometry will demonstrate that the universe
+possesses a pure Temporal Anisotropy Gradient governed by the Law of Linear Causal
+Coupling (D = D · z). I have already confirmed this signature at an unprecedented
+0
+30.36σsignificanceusingtheSDSSDR16Qquasarcatalog. Itisimperativetonotethatthis
+formidablestatisticalmarkwasextractedpurelyfromempiricaldatathroughastrictBlind
+Audit Protocol, which deliberately shuffled phase residuals in Monte Carlo simulations to
+purge any prior theoretical extrapolation or spatial bias.
+1
+--- PAGE 2 ---
+• Scenario B (ΛCDM Manipulation): As raw data passes through standard pipelines,
+the real causal signal will be “hijacked” and forced to artificially reappear as an anomalous
+excess in intrinsic error dispersion (σ ) and color parameters. I predict that these cata-
+int
+logs will report an inexplicable excess of noise directionally aligned with the Cortez Axis
+(Cosmic Precession).
+2 Fluid Dynamics in Stellar Streams (Gaia DR4 and LSST)
+In the current academic paradigm, morphological “gaps” in stellar streams are phenomeno-
+logically attributed to random collisions with invisible dark matter sub-halos. RRT shifts
+this phenomenon from the stochastic to the deterministic domain. When a stellar stream
+plunges toward the galactic pericenter, its local acceleration drops below the Cortez Limit
+(a = 1.2001 × 10−10m/s2), and the system undergoes Viscous Shear due to the hydrody-
+0
+namic friction of the T field.
+µν
+Blind Falsification Test (CFT): The LSST and Gaia DR4 must map structural ruptures
+dictated by fluid mechanics in the exact following kilometric windows:
+• Phlegethon: 12.5 kpc – 16.2 kpc
+• Fjörm: 10.0 kpc – 14.3 kpc
+• Slidr: 16.0 kpc – 19.8 kpc
+• Sylgr: 13.0 kpc – 16.7 kpc
+• Ylgr: 11.0 kpc – 14.9 kpc
+The Dual Prediction:
+• Scenario A (Pure Astrometry): Morphological gaps will occur exclusively at these
+a priori calculated coordinates. Furthermore, the 6D velocity dispersion at the edges of
+these gaps will reveal a strictly laminar flow, corresponding to a gradual tearing of the
+baryonic structure by spatial fluid tension.
+• Scenario B (N-Body Forcing): When researchers attempt to explain these gaps by
+artificially inserting 105M dark halos into their simulations, their standard models will
+⊙
+generate a stochastic, thermal “spray” of stars. I predict this will violate the angular
+momentum conservation of the actual stream photographed by the telescopes, a principle
+my fluid dynamics framework preserves intrinsically.
+3 Extreme Cosmological Precision Tests (Euclid, CMB-S4, and
+DESI)
+To definitively dismiss the dark sector hypothesis, I offer the following mathematical predictions
+for the next generation of catalogs:
+3.1 The Euclid and Roman Telescopes (Cosmic Shear)
+The mapping of weak gravitational lensing by the Euclid satellite will not find the uniform web
+of dark matter expected by the consensus.
+• Scenario A: The vector field T (z) will induce a unique rotational signature (B-mode)
+µ
+in the shear maps. I establish that the cosmic shear will rigidly obey the equation
+γ(θ,z) = γ (θ) (cid:2) 1+A (z)cos (cid:0) 2(ϕ−ϕ (z)) (cid:1)(cid:3), with an exact projected amplitude of
+ISO T T
+A (z = 0.5) = 0.074±0.008.
+T
+2
+--- PAGE 3 ---
+• ScenarioB:Standardpipelineswillinitiallytrytoclassifythisdirectionalshearasgalactic
+dust or telescope mirror aberration, forcing a local NFW profile until the mathematical
+discrepancy collapses the model.
+3.2 Cosmic Microwave Background (CMB-S4) and Gaia Precession
+I have demonstrated that the apparent “Axis of Evil” in the CMB is not a statistical anomaly,
+but the signature of the causal vector’s orientation at recombination (z = 1089) with 98.36%
+precision.
+• Scenario A: The CMB-S4 observatory will confirm, in the low multipoles (ℓ < 20), an
+angular gradient of h = 0.015 ± 0.003. For Gaia DR5/VLBI, I predict the real-time
+∗
+detection of Cosmic Rotation (Causal Axis Precession) at a rate of dϕ /dt = (0.12±0.03)
+T
+degrees per century.
+3.3 Large-Scale Structures and Voids (DESI Catalog)
+• Scenario A (Void Cosmology Test - CFT-2): Due to the Baryonic Neutrality Prin-
+ciple, the deep vacuum experiences less matter shielding. I predict that measuring cosmic
+expansion (H ) restricted strictly to the interior of large cosmic voids will systematically
+0
+yield a higher H value (K → 1) than measurements taken within dense superclusters.
+0 eff
+• Scenario B: Since ΛCDM cannot process topological variations in expansion, traditional
+measurements will report this variation as inexplicable parametric tensions in structural
+evolution (fσ ).
+8
+4 The Causal Fatigue Test: Gravitational Wave Signatures (LIGO
+O4 / LISA)
+Myframeworkpredictsthatgravity, likelight, suffersphaseimpedancefromtheviscousvacuum
+governed by the Cortez Refractive Index, η (z) = 1+β ·ln(1+z).
+C
+The Dual Prediction:
+• Scenario A (Clean Signal): I establish the Causal Fatigue Test. Coalescence events
+(black holes or neutron stars) aligning with the Cortez Axis (Right Ascension ≈ 168◦)
+will register extreme causal energy dissipation, inducing a catastrophic divergence of up to
+23% between the inferred gravitational luminosity distance (DGW) and the corresponding
+L
+electromagnetic distance (DEM).
+L
+• Scenario B (ΛCDM Pipeline): The LIGO collaboration frequently embeds assumed
+metric redshifts into their waveforms to calibrate distances. When algorithms mathemat-
+ically force the signal to hide this distance “fatigue” by artificially lowering the frequency,
+it will result in an unreal inflation of the Chirp Mass. I predict the standard model will
+report a fantastical population of impossibly massive black holes mysteriously clustered at
+a single pole of the sky.
+5 Conclusion: The End of Curve-Fitting
+The era of adding infinitely malleable “dark parameters” to fix foundational geometric errors is
+coming to a close. The universe does not emerge from an infinite geometric singularity, but from
+a Spontaneous Symmetry Breaking that grants duration a vectorial tensor force (T ).
+µν
+3
+--- PAGE 4 ---
+With the formalization of the core theory in early 2026, the Referential Relativity
+Theory has reached the ceiling of observational saturation. By unifying the cosmos
+under the constant β, I have reduced the galactic dynamic error to 1.33% (SPARC Catalog),
+achieved Theoretical Refractive Convergence in optical lensing at 99.89% (CASTLES Catalog),
+and secured a statistically definitive mark of 30.36σ for cosmic anisotropy.
+Any future attempts to insert spherical, oblate, or triaxial dark matter halos over the raw data
+from Gaia DR4 and LSST will inevitably collapse under the laminar flow of the spatial macro-
+fluid. Cosmologymustnowabandonthegeometryofshadowsandfirmlyembracethereferential
+dynamics of real causal flows.
+4
