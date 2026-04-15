@@ -17,11 +17,7 @@ function AnimatedSection({ children, delay = 0 }) {
   }, [delay]);
   
   return (
-    <div style={{
-      opacity: isVisible ? 1 : 0,
-      transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
-    }}>
+    <div className={`animated-section ${isVisible ? 'visible' : ''}`} style={{ '--delay': `${delay}ms` }}>
       {children}
     </div>
   );
