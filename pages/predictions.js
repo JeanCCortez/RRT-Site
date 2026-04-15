@@ -12,12 +12,19 @@ function AnimatedSection({ children, delay = 0 }) {
   const [isVisible, setIsVisible] = useState(false);
   
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), delay);
+    // Pequeno delay para garantir que o componente renderizou
+    const timer = setTimeout(() => setIsVisible(true), 50 + delay);
     return () => clearTimeout(timer);
   }, [delay]);
   
   return (
-    <div className={`animated-section ${isVisible ? 'visible' : ''}`} style={{ '--delay': `${delay}ms` }}>
+    <div style={{
+      opacity: isVisible ? 1 : 0,
+      transform: isVisible ? 'translateY(0px)' : 'translateY(20px)',
+      transition: `opacity 0.8s ease-out 0s, transform 0.8s ease-out 0s`,
+      transitionDelay: `${delay}ms`,
+      willChange: 'opacity, transform',
+    }}>
       {children}
     </div>
   );
