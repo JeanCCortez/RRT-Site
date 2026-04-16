@@ -18,35 +18,35 @@ export default function VoidCosmologySimulation() {
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
 
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0e27);
+      const scene = new THREELib.Scene();
+      scene.background = new THREELib.Color(0x0a0e27);
 
-      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      const camera = new THREELib.PerspectiveCamera(75, width / height, 0.1, 1000);
       camera.position.z = zoomRef.current;
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      const renderer = new THREELib.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(window.devicePixelRatio);
       containerRef.current.appendChild(renderer.domElement);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      const ambientLight = new THREELib.AmbientLight(0xffffff, 0.6);
       scene.add(ambientLight);
 
-      const pointLight = new THREE.PointLight(0xffffff, 0.8);
+      const pointLight = new THREELib.PointLight(0xffffff, 0.8);
       pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
 
       // Create supercluster (left, slow expansion)
-      const superclusterGeometry = new THREE.BoxGeometry(2, 4, 2);
-      const superclusterMaterial = new THREE.MeshPhongMaterial({ color: 0x10b981, emissive: 0x059669, wireframe: true });
-      const supercluster = new THREE.Mesh(superclusterGeometry, superclusterMaterial);
+      const superclusterGeometry = new THREELib.BoxGeometry(2, 4, 2);
+      const superclusterMaterial = new THREELib.MeshPhongMaterial({ color: 0x10b981, emissive: 0x059669, wireframe: true });
+      const supercluster = new THREELib.Mesh(superclusterGeometry, superclusterMaterial);
       supercluster.position.x = -3;
       scene.add(supercluster);
 
       // Create void (right, fast expansion)
-      const voidGeometry = new THREE.BoxGeometry(2, 4, 2);
-      const voidMaterial = new THREE.MeshPhongMaterial({ color: 0x3b82f6, emissive: 0x1e40af, wireframe: true });
-      const voidBox = new THREE.Mesh(voidGeometry, voidMaterial);
+      const voidGeometry = new THREELib.BoxGeometry(2, 4, 2);
+      const voidMaterial = new THREELib.MeshPhongMaterial({ color: 0x3b82f6, emissive: 0x1e40af, wireframe: true });
+      const voidBox = new THREELib.Mesh(voidGeometry, voidMaterial);
       voidBox.position.x = 3;
       scene.add(voidBox);
 
@@ -54,21 +54,21 @@ export default function VoidCosmologySimulation() {
       const createArrows = (x, count, isRRT) => {
         const arrows = [];
         for (let i = 0; i < count; i++) {
-          const group = new THREE.Group();
+          const group = new THREELib.Group();
           
           // Arrow shaft
-          const shaftGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 8);
+          const shaftGeometry = new THREELib.CylinderGeometry(0.1, 0.1, 1, 8);
           const material = x < 0 ? 
-            new THREE.MeshPhongMaterial({ color: 0x10b981 }) :
-            new THREE.MeshPhongMaterial({ color: 0x3b82f6 });
-          const shaft = new THREE.Mesh(shaftGeometry, material);
+            new THREELib.MeshPhongMaterial({ color: 0x10b981 }) :
+            new THREELib.MeshPhongMaterial({ color: 0x3b82f6 });
+          const shaft = new THREELib.Mesh(shaftGeometry, material);
           shaft.rotation.z = Math.PI / 2;
           shaft.position.x = 0.5;
           group.add(shaft);
 
           // Arrow head
-          const headGeometry = new THREE.ConeGeometry(0.2, 0.4, 8);
-          const head = new THREE.Mesh(headGeometry, material);
+          const headGeometry = new THREELib.ConeGeometry(0.2, 0.4, 8);
+          const head = new THREELib.Mesh(headGeometry, material);
           head.rotation.z = -Math.PI / 2;
           head.position.x = 1.2;
           group.add(head);

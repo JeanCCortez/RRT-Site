@@ -1,49 +1,69 @@
 import { useRef, useEffect, useState } from 'react';
 
+// Import Three.js at component level
+let THREE = null;
+
+if (typeof window !== 'undefined') {
+  try {
+    require('three').then(mod => {
+      THREE = mod.default || mod;
+    }).catch(() => {});
+  } catch (e) {
+    // Three.js not loaded yet
+  }
+}
+
 export default function CosmicShearSimulation() {
   const containerRef = useRef(null);
+  const sceneRef = useRef(null);
+  const rendererRef = useRef(null);
   const [isRRT, setIsRRT] = useState(true);
   const timeRef = useRef(0);
   const rotationRef = useRef({ x: 0, y: 0 });
   const mouseDownRef = useRef({ x: 0, y: 0 });
   const isDraggingRef = useRef(false);
   const zoomRef = useRef(5);
+  const animationIdRef = useRef(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || !containerRef.current) return;
 
-    import('three').then((THREE) => {
+    // Dynamically load Three.js
+    Promise.all([import('three')]).then(([threeModule]) => {
+      const THREELib = threeModule.default || threeModule;
       if (!containerRef.current) return;
 
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
 
       // Scene
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0e27);
+      const scene = new THREELib.Scene();
+      scene.background = new THREELib.Color(0x0a0e27);
+      sceneRef.current = scene;
 
       // Camera
-      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      const camera = new THREELib.PerspectiveCamera(75, width / height, 0.1, 1000);
       camera.position.z = zoomRef.current;
 
       // Renderer
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      const renderer = new THREELib.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(window.devicePixelRatio);
       containerRef.current.appendChild(renderer.domElement);
+      rendererRef.current = renderer;
 
       // Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      const ambientLight = new THREELib.AmbientLight(0xffffff, 0.6);
       scene.add(ambientLight);
 
-      const pointLight = new THREE.PointLight(0xffffff, 0.8);
+      const pointLight = new THREELib.PointLight(0xffffff, 0.8);
       pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
 
       // Create stars
-      const starGeometry = new THREE.SphereGeometry(0.15, 16, 16);
-      const starMaterialRRT = new THREE.MeshPhongMaterial({ color: 0x00ffff });
-      const starMaterialLCDM = new THREE.MeshPhongMaterial({ color: 0xff6b35 });
+      const starGeometry = new THREELib.SphereGeometry(0.15, 16, 16);
+      const starMaterialRRT = new THREELib.MeshPhongMaterial({ color: 0x00ffff });
+      const starMaterialLCDM = new THREELib.MeshPhongMaterial({ color: 0xff6b35 });
 
       const stars = [];
       const radius = 3;
@@ -54,7 +74,7 @@ export default function CosmicShearSimulation() {
         const y = Math.sin(angle) * radius;
         const z = (Math.random() - 0.5) * 0.5;
 
-        const star = new THREE.Mesh(starGeometry, isRRT ? starMaterialRRT : starMaterialLCDM);
+        const star = new THREELib.Mesh(starGeometry, isRRT ? starMaterialRRT : starMaterialLCDM);
         star.position.set(x, y, z);
         star.userData = { angle, baseX: x, baseY: y, baseZ: z, radius };
 
@@ -71,17 +91,17 @@ export default function CosmicShearSimulation() {
         for (let r = 0; r <= 4; r += 0.2) {
           const x = Math.cos(angle) * r;
           const y = Math.sin(angle) * r;
-          points.push(new THREE.Vector3(x, y, 0));
+          points.push(new THREELib.Vector3(x, y, 0));
         }
 
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const material = new THREE.LineBasicMaterial({
+        const geometry = new THREELib.BufferGeometry().setFromPoints(points);
+        const material = new THREELib.LineBasicMaterial({
           color: isRRT ? 0x00ffff : 0xff6b35,
           opacity: 0.4,
           transparent: true,
         });
 
-        const line = new THREE.Line(geometry, material);
+        const line = new THREELib.Line(geometry, material);
         scene.add(line);
         lines.push(line);
       }

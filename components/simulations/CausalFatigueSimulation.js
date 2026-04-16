@@ -17,52 +17,52 @@ export default function CausalFatigueSimulation() {
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
 
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0e27);
+      const scene = new THREELib.Scene();
+      scene.background = new THREELib.Color(0x0a0e27);
 
-      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      const camera = new THREELib.PerspectiveCamera(75, width / height, 0.1, 1000);
       camera.position.z = zoomRef.current;
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      const renderer = new THREELib.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(window.devicePixelRatio);
       containerRef.current.appendChild(renderer.domElement);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      const ambientLight = new THREELib.AmbientLight(0xffffff, 0.5);
       scene.add(ambientLight);
 
-      const pointLight = new THREE.PointLight(0xffffff, 0.8);
+      const pointLight = new THREELib.PointLight(0xffffff, 0.8);
       pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
 
       // Black Hole Source
-      const bhGeometry = new THREE.SphereGeometry(0.4, 32, 32);
-      const bhMaterial = new THREE.MeshPhongMaterial({ color: 0xa855f7, emissive: 0x7c3aed });
-      const bhMesh = new THREE.Mesh(bhGeometry, bhMaterial);
+      const bhGeometry = new THREELib.SphereGeometry(0.4, 32, 32);
+      const bhMaterial = new THREELib.MeshPhongMaterial({ color: 0xa855f7, emissive: 0x7c3aed });
+      const bhMesh = new THREELib.Mesh(bhGeometry, bhMaterial);
       bhMesh.position.x = -4;
       scene.add(bhMesh);
 
       // LIGO Detector
-      const ligoGeometry = new THREE.SphereGeometry(0.35, 32, 32);
-      const ligoMaterial = new THREE.MeshPhongMaterial({ color: 0xff6b35, emissive: 0xdc2626 });
-      const ligoMesh = new THREE.Mesh(ligoGeometry, ligoMaterial);
+      const ligoGeometry = new THREELib.SphereGeometry(0.35, 32, 32);
+      const ligoMaterial = new THREELib.MeshPhongMaterial({ color: 0xff6b35, emissive: 0xdc2626 });
+      const ligoMesh = new THREELib.Mesh(ligoGeometry, ligoMaterial);
       ligoMesh.position.x = 4;
       scene.add(ligoMesh);
 
       // EM Wave (yellow line)
-      const emCurve = new THREE.LineCurve3(
-        new THREE.Vector3(-3.5, 1, 0),
-        new THREE.Vector3(3.5, 1, 0)
+      const emCurve = new THREELib.LineCurve3(
+        new THREELib.Vector3(-3.5, 1, 0),
+        new THREELib.Vector3(3.5, 1, 0)
       );
-      const emGeometry = new THREE.BufferGeometry().setFromPoints(
+      const emGeometry = new THREELib.BufferGeometry().setFromPoints(
         emCurve.getPoints(100)
       );
-      const emMaterial = new THREE.LineBasicMaterial({ color: 0xfbbf24, linewidth: 3 });
-      const emLine = new THREE.Line(emGeometry, emMaterial);
+      const emMaterial = new THREELib.LineBasicMaterial({ color: 0xfbbf24, linewidth: 3 });
+      const emLine = new THREELib.Line(emGeometry, emMaterial);
       scene.add(emLine);
 
       // GW Wave (blue attenuated wave)
-      const gwMaterial = new THREE.LineBasicMaterial({ color: 0x3b82f6, linewidth: 2 });
+      const gwMaterial = new THREELib.LineBasicMaterial({ color: 0x3b82f6, linewidth: 2 });
       let gwLine = null;
 
       // Create GW wave points that animate
@@ -80,7 +80,7 @@ export default function CausalFatigueSimulation() {
           const phase = (x + timeRef.current * 2) * frequency * 2;
           const y = -1 + Math.sin(phase) * amplitude;
           
-          points.push(new THREE.Vector3(x, y, 0));
+          points.push(new THREELib.Vector3(x, y, 0));
         }
         return points;
       };
@@ -130,8 +130,8 @@ export default function CausalFatigueSimulation() {
         // Update GW wave
         if (gwLine) scene.remove(gwLine);
         const gwPoints = createGWWave();
-        const gwGeometry = new THREE.BufferGeometry().setFromPoints(gwPoints);
-        gwLine = new THREE.Line(gwGeometry, gwMaterial);
+        const gwGeometry = new THREELib.BufferGeometry().setFromPoints(gwPoints);
+        gwLine = new THREELib.Line(gwGeometry, gwMaterial);
         scene.add(gwLine);
 
         renderer.render(scene, camera);

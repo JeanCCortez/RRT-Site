@@ -18,38 +18,38 @@ export default function CMBGenesisSimulation() {
       const width = containerRef.current.clientWidth;
       const height = containerRef.current.clientHeight;
 
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x0a0e27);
+      const scene = new THREELib.Scene();
+      scene.background = new THREELib.Color(0x0a0e27);
 
-      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      const camera = new THREELib.PerspectiveCamera(75, width / height, 0.1, 1000);
       camera.position.z = zoomRef.current;
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      const renderer = new THREELib.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(width, height);
       renderer.setPixelRatio(window.devicePixelRatio);
       containerRef.current.appendChild(renderer.domElement);
 
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      const ambientLight = new THREELib.AmbientLight(0xffffff, 0.6);
       scene.add(ambientLight);
 
-      const pointLight = new THREE.PointLight(0xffffff, 0.8);
+      const pointLight = new THREELib.PointLight(0xffffff, 0.8);
       pointLight.position.set(5, 5, 5);
       scene.add(pointLight);
 
       // Causal vector (RRT only)
-      const causalGeometry = new THREE.CylinderGeometry(0.08, 0.08, 5, 16);
-      const causalMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00, emissive: 0x00aa00 });
-      const causalVector = new THREE.Mesh(causalGeometry, causalMaterial);
+      const causalGeometry = new THREELib.CylinderGeometry(0.08, 0.08, 5, 16);
+      const causalMaterial = new THREELib.MeshPhongMaterial({ color: 0x00ff00, emissive: 0x00aa00 });
+      const causalVector = new THREELib.Mesh(causalGeometry, causalMaterial);
       causalVector.visible = isRRT;
       scene.add(causalVector);
 
       // Hot particles (red)
-      const hotGeometry = new THREE.SphereGeometry(0.12, 16, 16);
-      const hotMaterial = new THREE.MeshPhongMaterial({ color: 0xff6464 });
+      const hotGeometry = new THREELib.SphereGeometry(0.12, 16, 16);
+      const hotMaterial = new THREELib.MeshPhongMaterial({ color: 0xff6464 });
       const hotParticles = [];
 
       for (let i = 0; i < 150; i++) {
-        const particle = new THREE.Mesh(hotGeometry, hotMaterial);
+        const particle = new THREELib.Mesh(hotGeometry, hotMaterial);
         const angle = Math.random() * Math.PI * 0.4 - Math.PI * 0.2;
         const dist = 2;
         particle.position.set(
@@ -63,12 +63,12 @@ export default function CMBGenesisSimulation() {
       }
 
       // Cold particles (blue)
-      const coldGeometry = new THREE.SphereGeometry(0.12, 16, 16);
-      const coldMaterial = new THREE.MeshPhongMaterial({ color: 0x6496ff });
+      const coldGeometry = new THREELib.SphereGeometry(0.12, 16, 16);
+      const coldMaterial = new THREELib.MeshPhongMaterial({ color: 0x6496ff });
       const coldParticles = [];
 
       for (let i = 0; i < 150; i++) {
-        const particle = new THREE.Mesh(coldGeometry, coldMaterial);
+        const particle = new THREELib.Mesh(coldGeometry, coldMaterial);
         const angle = Math.random() * Math.PI * 0.4 - Math.PI * 0.2;
         const dist = 2;
         particle.position.set(
