@@ -1,38 +1,299 @@
 ﻿import Layout from '../components/Layout';
 import Head from 'next/head';
-import dynamic from 'next/dynamic';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-const StreamVisualization = dynamic(() => import('../components/StreamVisualization'), {
-  ssr: false,
-  loading: () => <div style={{ width: '100%', height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#a1a1aa' }}>Loading 3D Visualization...</div>
-});
+function StreamAnimationCanvas({ stream }) {
+  const canvasRef = useRef(null);
+  const [isAnimating, setIsAnimating] = useState(true);
 
-function AnimatedSection({ children, delay = 0 }) {
-  const [show, setShow] = useState(false);
-  
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShow(true);
-    }, delay);
-    return () => clearTimeout(timer);
-  }, [delay]);
-  
-  const baseStyle = {
-    opacity: show ? 1 : 0,
-    transform: show ? 'translateY(0)' : 'translateY(20px)',
-  };
-  
-  const transitionStyle = show ? 'opacity 0.7s ease-out, transform 0.7s ease-out' : 'none';
-  
-  return (
-    <div style={{
-      ...baseStyle,
-      transition: transitionStyle,
-    }}>
-      {children}
-    </div>
-  );
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrame = null;
+    let progress = 0;
+
+    // Características ÚNICAS de cada corrente
+    const streamConfigs = {
+      'Phlegethon': {
+        retrograde: true,
+        thickness: 2,
+        depth: 'intermediate',
+        tearStartKpc: 16.2,
+        tearEndKpc: 12.5,
+        orbitalAngle: -45,
+        color: '#10b981'
+      },
+      'Fjörm': {
+        retrograde: false,
+        thickness: 3,
+        depth: 'deep',
+        tearStartKpc: 14.3,
+        tearEndKpc: 10.0,
+        orbitalAngle: 30,
+        color: '#3b82f6'
+      },
+      'Slidr': {
+        retrograde: false,
+        thickness: 1.5,
+        depth: 'external',
+        tearStartKpc: 19.8,
+        tearEndKpc: 16.0,
+        orbitalAngle: 0,
+        color: '#a855f7'
+      },
+      'Sylgr': {
+        retrograde: false,
+        thickness: 2.5,
+        depth: 'intermediate',
+        tearStartKpc: 16.7,
+        tearEndKpc: 13.0,
+        orbitalAngle: 20,
+        twist: true,
+        color: '#f59e0b'
+      },
+      'Ylgr': {
+        retrograde: false,
+        thickness: 3.5,
+        depth: 'internal',
+        tearStartKpc: 14.9,
+        tearEndKpc: 11.0,
+        orbitalAngle: 45,
+        densityContrast: true,
+        color: '#ef4444'
+      }
+    };
+
+    const config = streamConfigs[stream.name];
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background: disco galáctico
+      const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, 150);
+      gradient.addColorStop(0, 'rgba(50, 50, 100, 0.3)');
+      gradient.addColorStop(1, 'rgba(10, 10, 30, 0.1)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw galactic disk outline
+      ctx.strokeStyle = 'rgba(100, 100, 150, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(canvas.width / 2, canvas.height / 2, 140, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Animate stream based on progress
+      progress = (progress + 0.01) % 1;
+
+      // Draw stream: starts intact, tears during critical zone
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      if (config.depth === 'external') {
+        // Slidr: suave, arrastado, longo
+        drawSlidrStream(ctx, centerX, centerY, progress, config);
+      } else if (config.depth === 'deep') {
+        // Fjörm: mergulho profundo, rasgo abrupto
+        drawFjormStream(ctx, centerX, centerY, progress, config);
+      } else if (config.retrograde) {
+        // Phlegethon: retrógrada, órbita oposta
+        drawPhlegethonStream(ctx, centerX, centerY, progress, config);
+      } else if (config.twist) {
+        // Sylgr: torção diagonal
+        drawSylgrStream(ctx, centerX, centerY, progress, config);
+      } else if (config.densityContrast) {
+        // Ylgr: contraste de densidade, estrangulamento
+        drawYlgrStream(ctx, centerX, centerY, progress, config);
+      }
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    const drawSlidrStream = (ctx, cx, cy, prog, cfg) => {
+      ctx.strokeStyle = cfg.color;
+      ctx.lineWidth = cfg.thickness;
+
+      // Orbita externo suave
+      for (let i = 0; i < 1; i += 0.02) {
+        const angle = (i * Math.PI * 2 + prog * Math.PI * 2) % (Math.PI * 2);
+        const orbitRadius = 120 - prog * 40;
+
+        ctx.beginPath();
+        const x1 = cx + Math.cos(angle) * orbitRadius;
+        const y1 = cy + Math.sin(angle) * orbitRadius + 30;
+
+        // Tear gradualmente ao entrar na zona crítica (19.8-16.0 kpc)
+        const tearPhase = (orbitRadius - 80) / 40;
+        const dispersal = Math.max(0, Math.sin(tearPhase * Math.PI) * prog * 15);
+
+        ctx.moveTo(x1 - dispersal * 0.5, y1 - dispersal * 0.3);
+        ctx.lineTo(x1 + dispersal * 0.5, y1 + dispersal * 0.3);
+        ctx.stroke();
+      }
+
+      // Stars em fluxo laminar
+      ctx.fillStyle = cfg.color;
+      ctx.globalAlpha = 0.6;
+      for (let i = 0; i < 80; i++) {
+        const angle = (i / 80) * Math.PI * 2 + prog * Math.PI * 2;
+        const r = 110 - prog * 35 + (Math.sin(angle * 3) * 5);
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r + 25;
+        ctx.fillRect(x - 1, y - 1, 2, 2);
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const drawFjormStream = (ctx, cx, cy, prog, cfg) => {
+      ctx.strokeStyle = cfg.color;
+      ctx.lineWidth = cfg.thickness;
+
+      // Mergulho rápido para dentro (10-14.3 kpc)
+      const depth = prog * 80;
+      ctx.beginPath();
+      ctx.moveTo(cx - 60, cy - 80);
+      ctx.bezierCurveTo(
+        cx - 40, cy - 80 + depth,
+        cx + 40, cy - 80 + depth,
+        cx + 60, cy + depth
+      );
+      ctx.stroke();
+
+      // Rasgo abrupto no meio
+      if (prog > 0.3 && prog < 0.7) {
+        const tearMagnitude = Math.sin((prog - 0.3) * Math.PI * 2) * 20;
+        ctx.strokeStyle = cfg.color;
+        ctx.globalAlpha = 0.7;
+        for (let i = 0; i < 5; i++) {
+          ctx.beginPath();
+          ctx.moveTo(cx - 20 + i * 10, cy - 80 + depth - 40);
+          ctx.lineTo(cx - 20 + i * 10 + tearMagnitude, cy - 80 + depth - 40 + tearMagnitude * 1.5);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // Fragmentos sobreviventes voltam
+      if (prog > 0.6) {
+        ctx.fillStyle = cfg.color;
+        ctx.globalAlpha = 0.5;
+        for (let i = 0; i < 30; i++) {
+          const x = cx + (Math.random() - 0.5) * 40;
+          const y = cy + depth + (Math.random() - 0.5) * 30;
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+        ctx.globalAlpha = 1;
+      }
+    };
+
+    const drawPhlegethonStream = (ctx, cx, cy, prog, cfg) => {
+      // Retrógrada: disco gira um lado, Phlegethon outro
+      ctx.strokeStyle = cfg.color;
+      ctx.lineWidth = cfg.thickness;
+
+      const angle = (prog * Math.PI * 4) % (Math.PI * 2);
+      const retrogradeAngle = -angle; // Oposto ao disco
+
+      // Filamento ultrafino de Phlegethon
+      ctx.beginPath();
+      for (let t = 0; t <= 1; t += 0.05) {
+        const orbitR = 110 - t * 50;
+        const x = cx + Math.cos(retrogradeAngle + t * Math.PI) * orbitR;
+        const y = cy + Math.sin(retrogradeAngle + t * Math.PI) * orbitR;
+
+        // Rasgo na janela crítica (16.2-12.5 kpc)
+        const inCriticalZone = t > 0.4 && t < 0.7;
+        const tearAmount = inCriticalZone ? Math.sin((t - 0.4) / 0.3 * Math.PI) * 15 * prog : 0;
+
+        if (t === 0) ctx.moveTo(x, y - tearAmount);
+        else ctx.lineTo(x, y - tearAmount);
+      }
+      ctx.stroke();
+
+      // Anel de disco girando (para contrastar retrógrada)
+      ctx.strokeStyle = 'rgba(100, 100, 200, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 100, angle, angle + Math.PI * 0.3);
+      ctx.stroke();
+    };
+
+    const drawSylgrStream = (ctx, cx, cy, prog, cfg) => {
+      // Cisalhamento com torção diagonal
+      ctx.strokeStyle = cfg.color;
+      ctx.lineWidth = cfg.thickness;
+
+      ctx.beginPath();
+      for (let t = 0; t <= 1; t += 0.05) {
+        const x = cx - 70 + t * 140;
+        const y = cy - 50 + t * 100;
+
+        // Torção hidrodinâmica (não rotunda como dark matter)
+        const twist = Math.sin(t * Math.PI * 3) * (prog * 20) * (t > 0.4 ? 1 : 0.3);
+
+        if (t === 0) ctx.moveTo(x + twist, y);
+        else ctx.lineTo(x + twist, y);
+      }
+      ctx.stroke();
+
+      // Esgarçamento laminar diagonal (não spray)
+      ctx.strokeStyle = cfg.color;
+      ctx.globalAlpha = 0.5;
+      for (let i = 0; i < 4; i++) {
+        ctx.beginPath();
+        const baseX = cx - 70 + (i / 4) * 140;
+        const baseY = cy - 50 + (i / 4) * 100;
+        const stretch = Math.sin((prog + i * 0.25) * Math.PI * 2) * 15;
+        ctx.moveTo(baseX - 5, baseY - 5 + stretch);
+        ctx.lineTo(baseX + 5, baseY + 5 + stretch);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const drawYlgrStream = (ctx, cx, cy, prog, cfg) => {
+      // Contraste de densidade com estrangulamento
+      ctx.fillStyle = cfg.color;
+
+      // Cabeça densa
+      ctx.globalAlpha = 0.8;
+      for (let i = 0; i < 60; i++) {
+        const angle = (i / 60) * Math.PI * 0.6 - Math.PI * 0.3;
+        const r = 60;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy - 80 + Math.sin(angle) * r;
+        ctx.fillRect(x - 1.5, y - 1.5, 3, 3);
+      }
+
+      // Estrangulamento na zona crítica
+      const strangulation = Math.max(0, Math.sin(prog * Math.PI) * 30);
+      ctx.strokeStyle = cfg.color;
+      ctx.lineWidth = cfg.thickness;
+      ctx.beginPath();
+      ctx.moveTo(cx - (20 - strangulation), cy - 20);
+      ctx.lineTo(cx + (20 - strangulation), cy - 20);
+      ctx.stroke();
+
+      // Cauda tenuada
+      ctx.globalAlpha = 0.4 - prog * 0.2;
+      for (let i = 0; i < 40; i++) {
+        const x = cx + (Math.random() - 0.5) * (40 - prog * 20);
+        const y = cy + 20 + i * 3;
+        ctx.fillRect(x - 1, y - 1, 2, 2);
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    animate();
+
+    return () => {
+      if (animationFrame) cancelAnimationFrame(animationFrame);
+    };
+  }, [stream.name]);
+
+  return <canvas ref={canvasRef} width={400} height={300} style={{ borderRadius: '6px', border: '1px solid rgba(255, 255, 255, 0.1)', backgroundColor: '#0a0a0a' }} />;
 }
 
 export default function Predictions() {
@@ -100,30 +361,25 @@ export default function Predictions() {
         {/* Content Container */}
         <div style={{ margin: '0 auto', maxWidth: '850px', width: '100%', padding: '4rem 2rem', boxSizing: 'border-box' }}>
           {/* Header Section */}
-          <AnimatedSection delay={0}>
-            <div className="volume-header" style={{ marginBottom: '3rem' }}>
-              <h1 className="hero-title" style={{ color: '#ef4444' }}>Predictions & Falsifiability</h1>
-              <h2 className="vol-subtitle" style={{ color: '#ef4444', marginBottom: '2rem' }}>A Deterministic Agenda for Cosmic Falsification</h2>
-            </div>
-          </AnimatedSection>
+          <div className="volume-header" style={{ marginBottom: '3rem' }}>
+            <h1 className="hero-title" style={{ color: '#ef4444' }}>Predictions & Falsifiability</h1>
+            <h2 className="vol-subtitle" style={{ color: '#ef4444', marginBottom: '2rem' }}>A Deterministic Agenda for Cosmic Falsification</h2>
+          </div>
 
           {/* Introduction */}
-          <AnimatedSection delay={100}>
-            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900 mt-0">Overview</h2>
-              <p className="text-justify leading-relaxed text-lg mb-4">
-                The power of a scientific theory lies not in its ability to explain past observations, but in its capacity to make <strong>testable, falsifiable predictions about future observations</strong>. RRT presents a deterministic agenda for how observable data from next-generation astronomical surveys will distinguish between RRT and the standard LCDM model.
-              </p>
-              <p className="text-justify leading-relaxed text-lg">
-                This page outlines specific, quantitative predictions for major observatories arriving over the next 3-5 years. Each prediction employs a "Dual Scenario" framework: Scenario A represents what RRT predicts will appear in <em>raw, unmanipulated data</em>, while Scenario B shows what standard pipelines will claim by artificially forcing the data into an isotropic mold.
-              </p>
-            </section>
-          </AnimatedSection>
+          <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 mt-0">Overview</h2>
+            <p className="text-justify leading-relaxed text-lg mb-4">
+              The power of a scientific theory lies not in its ability to explain past observations, but in its capacity to make <strong>testable, falsifiable predictions about future observations</strong>. RRT presents a deterministic agenda for how observable data from next-generation astronomical surveys will distinguish between RRT and the standard LCDM model.
+            </p>
+            <p className="text-justify leading-relaxed text-lg">
+              This page outlines specific, quantitative predictions for major observatories arriving over the next 3-5 years. Each prediction employs a "Dual Scenario" framework: Scenario A represents what RRT predicts will appear in <em>raw, unmanipulated data</em>, while Scenario B shows what standard pipelines will claim by artificially forcing the data into an isotropic mold.
+            </p>
+          </section>
 
           {/* Core Concept */}
-          <AnimatedSection delay={200}>
-            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">The Variance Absorption Mechanism</h2>
+          <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">The Variance Absorption Mechanism</h2>
               
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">The Central Problem</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -153,12 +409,10 @@ export default function Predictions() {
                 This dual prediction demonstrates the transparently falsifiable nature of RRT: if pipelines reveal Scenario A instead of Scenario B, the theory withstands falsification. If they reveal Scenario B, RRT's predictions are falsified, and the theory must be abandoned.
               </p>
             </section>
-          </AnimatedSection>
 
           {/* Fluid Dynamics in Stellar Streams */}
-          <AnimatedSection delay={300}>
-            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Fluid Dynamics in Stellar Streams (Gaia DR4 & LSST)</h2>
+          <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Fluid Dynamics in Stellar Streams (Gaia DR4 & LSST)</h2>
               
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">The Paradigm Shift</h3>
               <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', padding: '1.5rem', marginBottom: '2rem' }}>
@@ -187,39 +441,6 @@ export default function Predictions() {
                 <li>The system undergoes Viscous Shear caused by baryonic system coupling to the temporal tensor field</li>
                 <li>This hydrodynamic friction creates precise morphological ruptures at predictable radii</li>
               </ol>
-
-              <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Interactive 3D Visualization</h3>
-              <p className="text-justify leading-relaxed text-lg mb-6">
-                Toggle between RRT (laminar, deterministic) and LCDM (stochastic, chaotic) stellar stream morphologies:
-              </p>
-
-              {/* Toggle Button */}
-              <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-                <button
-                  onClick={() => setIsRRT(!isRRT)}
-                  style={{
-                    padding: '0.75rem 2rem',
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    borderRadius: '8px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    backgroundColor: isRRT ? '#00ffff' : '#ff6b35',
-                    color: '#0a0e27',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    transition: 'all 0.3s ease',
-                    boxShadow: `0 0 20px ${isRRT ? 'rgba(0, 255, 255, 0.5)' : 'rgba(255, 107, 53, 0.5)'}`
-                  }}
-                >
-                  {isRRT ? 'RRT: Laminar Flow' : 'LCDM: Stochastic Spray'}
-                </button>
-              </div>
-
-              {/* 3D Canvas */}
-              <div style={{ marginBottom: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <StreamVisualization isRRT={isRRT} />
-              </div>
 
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Interactive Analysis: Stream Gap Locations (Blind Predictions)</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -294,45 +515,27 @@ export default function Predictions() {
               {selectedStream && !isRunning && logs.length > 0 && (
                 <div style={{ marginBottom: '2rem' }}>
                   <h4 style={{ margin: '1.5rem 0 1rem 0', color: '#fbbf24', fontWeight: 'bold', textAlign: 'center' }}>
-                    Visual Comparison: Stream Morphology
+                    Live Animation: Stream Morphology during Critical Acceleration Phase
                   </h4>
-                  
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
-                    {/* Scenario A: RRT Deterministic */}
-                    <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '2px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', padding: '1.5rem' }}>
-                      <h4 style={{ margin: '0 0 1rem 0', color: '#10b981', fontWeight: 'bold', textAlign: 'center' }}>Scenario A: Pure Astrometry (RRT)</h4>
-                      <div style={{ position: 'relative', height: '220px', backgroundColor: 'rgba(0, 0, 0, 0.3)', borderRadius: '6px', marginBottom: '1rem', border: '1px solid rgba(16, 185, 129, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                        <svg width="100%" height="100%" style={{ position: 'absolute' }}>
-                          {/* Stream arc */}
-                          <circle cx="50%" cy="60%" r="35" fill="none" stroke="#10b981" strokeWidth="2" opacity="0.4" />
-                          
-                          {/* Ordered star distribution (laminar flow) */}
-                          {Array.from({ length: 70 }).map((_, i) => {
-                            const angle = (i / 70) * Math.PI * 1.6 - Math.PI * 0.8;
-                            const r = 33 + Math.sin(angle * 2) * 2;
-                            const x = 50 + r * Math.cos(angle);
-                            const y = 60 + r * Math.sin(angle);
-                            return (
-                              <circle key={i} cx={`${x}%`} cy={`${y}%`} r="0.8" fill="#10b981" opacity="0.7" />
-                            );
-                          })}
-                          
-                          {/* Gap zone markers (RRT prediction) */}
-                          <rect x={`${20 + (selectedStream.gapMin / 30) * 30}%`} y="30%" width={`${((selectedStream.gapMax - selectedStream.gapMin) / 30) * 30}%`} height="60%" fill="#10b981" opacity="0.15" />
-                          <line x1={`${20 + (selectedStream.gapMin / 30) * 30}%`} y1="30%" x2={`${20 + (selectedStream.gapMin / 30) * 30}%`} y2="90%" stroke="#10b981" strokeWidth="1.5" opacity="0.6" strokeDasharray="4,4" />
-                          <line x1={`${20 + (selectedStream.gapMax / 30) * 30}%`} y1="30%" x2={`${20 + (selectedStream.gapMax / 30) * 30}%`} y2="90%" stroke="#10b981" strokeWidth="1.5" opacity="0.6" strokeDasharray="4,4" />
-                        </svg>
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: '#10b981', fontFamily: 'monospace', textAlign: 'center', lineHeight: '1.6' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Deterministic Gap Zone</div>
-                        <div>[{selectedStream.gapMin.toFixed(1)} kpc – {selectedStream.gapMax.toFixed(1)} kpc]</div>
-                        <div style={{ marginTop: '0.5rem', color: '#a1a1aa', fontSize: '0.7rem' }}>Laminar flow • Angular momentum conserved</div>
-                      </div>
-                    </div>
 
-                    {/* Scenario B: LCDM Stochastic */}
+                  {/* Canvas Animation - Scenario A: RRT */}
+                  <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '2px solid rgba(16, 185, 129, 0.3)', borderRadius: '8px', padding: '1.5rem', marginBottom: '2rem' }}>
+                    <h4 style={{ margin: '0 0 1rem 0', color: '#10b981', fontWeight: 'bold', textAlign: 'center' }}>Scenario A: Pure Astrometry (RRT) - Laminar Flow</h4>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <StreamAnimationCanvas stream={selectedStream} />
+                    </div>
+                    <div style={{ marginTop: '1rem', fontSize: '0.75rem', color: '#10b981', fontFamily: 'monospace', textAlign: 'center', lineHeight: '1.6' }}>
+                      <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Deterministic Viscous Shear</div>
+                      <div>Critical Zone: [{selectedStream.gapMin.toFixed(1)} kpc – {selectedStream.gapMax.toFixed(1)} kpc]</div>
+                      <div style={{ marginTop: '0.5rem', color: '#a1a1aa', fontSize: '0.7rem' }}>Laminar tear pattern • Angular momentum conserved • Hydrodynamic friction</div>
+                    </div>
+                  </div>
+
+                  {/* Comparison Grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+                    {/* Scenario B: LCDM Stochastic - for comparison */}
                     <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '2px solid rgba(239, 68, 68, 0.3)', borderRadius: '8px', padding: '1.5rem' }}>
-                      <h4 style={{ margin: '0 0 1rem 0', color: '#ef4444', fontWeight: 'bold', textAlign: 'center' }}>Scenario B: N-Body Forcing (LCDM)</h4>
+                      <h4 style={{ margin: '0 0 1rem 0', color: '#ef4444', fontWeight: 'bold', textAlign: 'center' }}>Scenario B: N-Body Forcing (LCDM) - For Comparison</h4>
                       <div style={{ position: 'relative', height: '220px', backgroundColor: 'rgba(0, 0, 0, 0.3)', borderRadius: '6px', marginBottom: '1rem', border: '1px solid rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                         <svg width="100%" height="100%" style={{ position: 'absolute' }}>
                           {/* Stream arc */}
@@ -393,12 +596,10 @@ export default function Predictions() {
                 </ul>
               </div>
             </section>
-          </AnimatedSection>
 
           {/* Cosmic Shear Predictions */}
-          <AnimatedSection delay={400}>
-            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Extreme Cosmological Precision Tests (Euclid, CMB-S4)</h2>
+          <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Extreme Cosmological Precision Tests (Euclid, CMB-S4)</h2>
               
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Euclid Weak Lensing: The Rotational Signature</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -432,12 +633,10 @@ export default function Predictions() {
                 <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>Rate of Cosmic Rotation (Causal Axis Precession)</p>
               </div>
             </section>
-          </AnimatedSection>
 
           {/* DESI Void Test */}
-          <AnimatedSection delay={500}>
-            <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Large-Scale Structure (DESI): The Void Expansion Rate Test</h2>
+          <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Large-Scale Structure (DESI): The Void Expansion Rate Test</h2>
               
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">The Novel Prediction</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -459,16 +658,13 @@ export default function Predictions() {
                 This topological variation reveals the "Causal Shielding Effect": baryonic matter literally shields the temporal field effects. In dense regions, the field is suppressed; in voids, it dominates the expansion dynamics.
               </p>
             </section>
-          </AnimatedSection>
 
           {/* Closing Statement */}
-          <AnimatedSection delay={600}>
-            <section className="bg-gradient-to-r from-red-900 to-red-800 p-6 rounded-lg shadow-sm border border-gray-200">
-              <p className="text-justify leading-relaxed text-lg text-gray-100 m-0">
-                The Falsification Agenda is explicitly deterministic. Each prediction can be tested, verified, or refuted by imminent astronomical surveys. If the cosmos conforms to these predictions, Einstein's geometric framework requires fundamental revision. If it does not, RRT must be abandoned. Science demands nothing less than this uncompromising transparency. The era of phenomenological fitting is over. The age of deterministic prediction has begun.
+          <section className="bg-gradient-to-r from-red-900 to-red-800 p-6 rounded-lg shadow-sm border border-gray-200">
+            <p className="text-justify leading-relaxed text-lg text-gray-100 m-0">
+              The Falsification Agenda is explicitly deterministic. Each prediction can be tested, verified, or refuted by imminent astronomical surveys. If the cosmos conforms to these predictions, Einstein's geometric framework requires fundamental revision. If it does not, RRT must be abandoned. Science demands nothing less than this uncompromising transparency. The era of phenomenological fitting is over. The age of deterministic prediction has begun.
               </p>
             </section>
-          </AnimatedSection>
         </div>
       </main>
     </Layout>
