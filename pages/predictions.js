@@ -1,6 +1,12 @@
 ﻿import Layout from '../components/Layout';
 import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+
+const CosmicShearSimulation = dynamic(() => import('../components/simulations/CosmicShearSimulation'), { ssr: false });
+const CMBGenesisSimulation = dynamic(() => import('../components/simulations/CMBGenesisSimulation'), { ssr: false });
+const VoidCosmologySimulation = dynamic(() => import('../components/simulations/VoidCosmologySimulation'), { ssr: false });
+const CausalFatigueSimulation = dynamic(() => import('../components/simulations/CausalFatigueSimulation'), { ssr: false });
 
 function StreamAnimationCanvas({ stream }) {
   const canvasRef = useRef(null);
@@ -613,6 +619,12 @@ export default function Predictions() {
                 </p>
               </div>
 
+              <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
+                <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Cosmic Shear Field</h4>
+                <CosmicShearSimulation />
+                <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Toggle between RRT (laminar torsion) and ΛCDM (chaotic scatter)</p>
+              </div>
+
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">CMB-S4: Low Multipole Angular Gradient</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
                 RRT has already demonstrated that the "Axis of Evil" is not a statistical anomaly, but the signature of the causal vector at recombination. CMB-S4 will measure this with unprecedented precision:
@@ -621,6 +633,12 @@ export default function Predictions() {
               <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', padding: '1.5rem', marginBottom: '2rem', fontFamily: 'monospace' }}>
                 <p style={{ margin: 0, color: '#a855f7' }}>h* = 0.015 +/- 0.003</p>
                 <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>Angular gradient in low multipoles (ell less than 20)</p>
+              </div>
+
+              <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
+                <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Primordial Plasma Genesis</h4>
+                <CMBGenesisSimulation />
+                <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Toggle between RRT (Spontaneous Symmetry Breaking with causal alignment) and ΛCDM (isotropic thermal expansion)</p>
               </div>
 
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">VLBI: Direct Measurement of Cosmic Rotation</h3>
@@ -653,11 +671,38 @@ export default function Predictions() {
                 <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>K_eff approximately 1 (perfect RRT agreement)</p>
               </div>
 
+              <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
+                <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Cosmic Web & Void Expansion</h4>
+                <VoidCosmologySimulation />
+                <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Green (Supercluster): Stagnation via Baryonic Neutrality | Blue (Void): Accelerated expansion</p>
+              </div>
+
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Physical Mechanism</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
                 This topological variation reveals the "Causal Shielding Effect": baryonic matter literally shields the temporal field effects. In dense regions, the field is suppressed; in voids, it dominates the expansion dynamics.
               </p>
             </section>
+
+          {/* LIGO/LISA Gravitational Waves */}
+          <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Gravitational Wave Astronomy (LIGO O4 / LISA): Causal Fatigue Signature</h2>
+            
+            <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Astrophysical Predictions</h3>
+            <p className="text-justify leading-relaxed text-lg mb-4">
+              Black hole mergers emit both electromagnetic and gravitational radiation. RRT predicts that gravitational waves interact with the causal field asymmetrically: while electromagnetic waves traverse unimpeded, gravitational waves experience progressive attenuation and frequency degradation through "Causal Fatigue."
+            </p>
+            
+            <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', padding: '1.5rem', marginBottom: '2rem', fontFamily: 'monospace' }}>
+              <p style={{ margin: 0, color: '#ef4444' }}>D_L^GW ≠ D_L^EM (Non-Standard Candle Anomaly)</p>
+              <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>Divergence expected: 15-25% over cosmological distances</p>
+            </div>
+
+            <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
+              <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Causal Fatigue in Gravitational Waves</h4>
+              <CausalFatigueSimulation />
+              <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Yellow (EM): Constant frequency | Blue (GW): Progressive frequency decrease and amplitude loss</p>
+            </div>
+          </section>
 
           {/* Closing Statement */}
           <section className="bg-gradient-to-r from-red-900 to-red-800 p-6 rounded-lg shadow-sm border border-gray-200">
