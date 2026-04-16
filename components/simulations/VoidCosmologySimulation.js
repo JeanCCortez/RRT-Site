@@ -1,178 +1,266 @@
 import { useRef, useEffect, useState } from 'react';
 
 export default function VoidCosmologySimulation() {
-  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const [isRRT, setIsRRT] = useState(true);
   const timeRef = useRef(0);
+  const rotationRef = useRef({ x: 0, y: 0 });
+  const mouseDownRef = useRef({ x: 0, y: 0 });
+  const isDraggingRef = useRef(false);
+  const zoomRef = useRef(8);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (typeof window === 'undefined') return;
 
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    let animationId;
+    import('three').then(({ default: THREE }) => {
+      if (!containerRef.current) return;
 
-    const animate = () => {
-      timeRef.current += 0.016;
-      
-      ctx.fillStyle = '#0a0e27';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      const width = containerRef.current.clientWidth;
+      const height = containerRef.current.clientHeight;
 
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x0a0e27);
 
-      // Supercluster zone (left, green)
-      const superclusterX = centerX - 150;
-      ctx.fillStyle = 'rgba(16, 185, 129, 0.1)';
-      ctx.fillRect(0, 0, centerX - 75, canvas.height);
+      const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+      camera.position.z = zoomRef.current;
 
-      // Void zone (right, blue)
-      ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
-      ctx.fillRect(centerX + 75, 0, centerX - 75, canvas.height);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      containerRef.current.appendChild(renderer.domElement);
 
-      // Draw expansion vectors
-      ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)';
-      ctx.lineWidth = 2;
-      ctx.fillStyle = 'rgba(16, 185, 129, 0.8)';
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
 
-      // Supercluster: Slow expansion
-      if (isRRT) {
-        for (let y = 50; y < canvas.height; y += 60) {
-          const scale = 0.3 + Math.sin(timeRef.current * 0.3) * 0.2;
-          const arrowLen = 20 * scale;
-          ctx.beginPath();
-          ctx.moveTo(superclusterX - 30, y);
-          ctx.lineTo(superclusterX - 30 + arrowLen, y);
-          ctx.stroke();
+      const pointLight = new THREE.PointLight(0xffffff, 0.8);
+      pointLight.position.set(5, 5, 5);
+      scene.add(pointLight);
 
-          // Arrowhead
-          ctx.beginPath();
-          ctx.moveTo(superclusterX - 30 + arrowLen, y);
-          ctx.lineTo(superclusterX - 30 + arrowLen - 5, y - 3);
-          ctx.lineTo(superclusterX - 30 + arrowLen - 5, y + 3);
-          ctx.closePath();
-          ctx.fill();
+      // Create supercluster (left, slow expansion)
+      const superclusterGeometry = new THREE.BoxGeometry(2, 4, 2);
+      const superclusterMaterial = new THREE.MeshPhongMaterial({ color: 0x10b981, emissive: 0x059669, wireframe: true });
+      const supercluster = new THREE.Mesh(superclusterGeometry, superclusterMaterial);
+      supercluster.position.x = -3;
+      scene.add(supercluster);
+
+      // Create void (right, fast expansion)
+      const voidGeometry = new THREE.BoxGeometry(2, 4, 2);
+      const voidMaterial = new THREE.MeshPhongMaterial({ color: 0x3b82f6, emissive: 0x1e40af, wireframe: true });
+      const voidBox = new THREE.Mesh(voidGeometry, voidMaterial);
+      voidBox.position.x = 3;
+      scene.add(voidBox);
+
+      // Create expansion arrow groups
+      const createArrows = (x, count, isRRT) => {
+        const arrows = [];
+        for (let i = 0; i < count; i++) {
+          const group = new THREE.Group();
+          
+          // Arrow shaft
+          const shaftGeometry = new THREE.CylinderGeometry(0.1, 0.1, 1, 8);
+          const material = x < 0 ? 
+            new THREE.MeshPhongMaterial({ color: 0x10b981 }) :
+            new THREE.MeshPhongMaterial({ color: 0x3b82f6 });
+          const shaft = new THREE.Mesh(shaftGeometry, material);
+          shaft.rotation.z = Math.PI / 2;
+          shaft.position.x = 0.5;
+          group.add(shaft);
+
+          // Arrow head
+          const headGeometry = new THREE.ConeGeometry(0.2, 0.4, 8);
+          const head = new THREE.Mesh(headGeometry, material);
+          head.rotation.z = -Math.PI / 2;
+          head.position.x = 1.2;
+          group.add(head);
+
+          group.position.set(x, -1.5 + i * 0.5, 0);
+          group.userData = { baseX: x, baseY: group.position.y, isRRT };
+          
+          scene.add(group);
+          arrows.push(group);
         }
-      } else {
-        for (let y = 50; y < canvas.height; y += 60) {
-          const scale = 0.5 + Math.sin(timeRef.current) * 0.15;
-          const arrowLen = 20 * scale;
-          ctx.beginPath();
-          ctx.moveTo(superclusterX - 30, y);
-          ctx.lineTo(superclusterX - 30 + arrowLen, y);
-          ctx.stroke();
+        return arrows;
+      };
 
-          ctx.beginPath();
-          ctx.moveTo(superclusterX - 30 + arrowLen, y);
-          ctx.lineTo(superclusterX - 30 + arrowLen - 5, y - 3);
-          ctx.lineTo(superclusterX - 30 + arrowLen - 5, y + 3);
-          ctx.closePath();
-          ctx.fill();
+      const superclusterArrows = createArrows(-3, 8, isRRT);
+      const voidArrows = createArrows(3, 8, isRRT);
+
+      const onMouseDown = (e) => {
+        isDraggingRef.current = true;
+        mouseDownRef.current = { x: e.clientX, y: e.clientY };
+      };
+
+      const onMouseMove = (e) => {
+        if (!isDraggingRef.current) return;
+        const dx = (e.clientX - mouseDownRef.current.x) * 0.01;
+        const dy = (e.clientY - mouseDownRef.current.y) * 0.01;
+        rotationRef.current.x += dy;
+        rotationRef.current.y += dx;
+        mouseDownRef.current = { x: e.clientX, y: e.clientY };
+      };
+
+      const onMouseUp = () => {
+        isDraggingRef.current = false;
+      };
+
+      const onWheel = (e) => {
+        e.preventDefault();
+        zoomRef.current += e.deltaY * 0.005;
+        zoomRef.current = Math.max(4, Math.min(20, zoomRef.current));
+      };
+
+      renderer.domElement.addEventListener('mousedown', onMouseDown);
+      renderer.domElement.addEventListener('mousemove', onMouseMove);
+      renderer.domElement.addEventListener('mouseup', onMouseUp);
+      renderer.domElement.addEventListener('wheel', onWheel, { passive: false });
+
+      const animate = () => {
+        timeRef.current += 0.016;
+        requestAnimationFrame(animate);
+
+        scene.rotation.x = rotationRef.current.x;
+        scene.rotation.y = rotationRef.current.y;
+        camera.position.z = zoomRef.current;
+
+        supercluster.rotation.x += 0.002;
+        supercluster.rotation.y += 0.003;
+        voidBox.rotation.x += 0.002;
+        voidBox.rotation.y += 0.003;
+
+        superclusterArrows.forEach((arrow, i) => {
+          if (isRRT) {
+            const scale = 0.3 + Math.sin(timeRef.current * 0.3 + i) * 0.15;
+            arrow.scale.x = scale;
+          } else {
+            const scale = 0.4 + Math.sin(timeRef.current * 0.2 + i) * 0.1;
+            arrow.scale.x = scale;
+          }
+        });
+
+        voidArrows.forEach((arrow, i) => {
+          if (isRRT) {
+            const scale = 1.5 + Math.sin(timeRef.current * 0.5 + i) * 0.3;
+            arrow.scale.x = scale;
+          } else {
+            const scale = 1.0 + Math.sin(timeRef.current * 0.2 + i) * 0.1;
+            arrow.scale.x = scale;
+          }
+        });
+
+        renderer.render(scene, camera);
+      };
+
+      animate();
+
+      return () => {
+        renderer.domElement.removeEventListener('mousedown', onMouseDown);
+        renderer.domElement.removeEventListener('mousemove', onMouseMove);
+        renderer.domElement.removeEventListener('mouseup', onMouseUp);
+        renderer.domElement.removeEventListener('wheel', onWheel);
+        if (containerRef.current && renderer.domElement.parentNode === containerRef.current) {
+          containerRef.current.removeChild(renderer.domElement);
         }
-      }
-
-      // Void: Fast expansion
-      ctx.strokeStyle = 'rgba(59, 130, 246, 0.6)';
-      ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
-
-      if (isRRT) {
-        for (let y = 50; y < canvas.height; y += 60) {
-          const scale = 1.5 + Math.sin(timeRef.current * 0.5) * 0.3;
-          const arrowLen = 30 * scale;
-          ctx.beginPath();
-          ctx.moveTo(centerX + 150, y);
-          ctx.lineTo(centerX + 150 + arrowLen, y);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(centerX + 150 + arrowLen, y);
-          ctx.lineTo(centerX + 150 + arrowLen - 5, y - 3);
-          ctx.lineTo(centerX + 150 + arrowLen - 5, y + 3);
-          ctx.closePath();
-          ctx.fill();
-        }
-      } else {
-        for (let y = 50; y < canvas.height; y += 60) {
-          const scale = 1.0 + Math.sin(timeRef.current) * 0.15;
-          const arrowLen = 25 * scale;
-          ctx.beginPath();
-          ctx.moveTo(centerX + 150, y);
-          ctx.lineTo(centerX + 150 + arrowLen, y);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(centerX + 150 + arrowLen, y);
-          ctx.lineTo(centerX + 150 + arrowLen - 5, y - 3);
-          ctx.lineTo(centerX + 150 + arrowLen - 5, y + 3);
-          ctx.closePath();
-          ctx.fill();
-        }
-      }
-
-      // Labels
-      ctx.fillStyle = '#a1a1aa';
-      ctx.font = '12px monospace';
-      ctx.textAlign = 'center';
-      ctx.fillText('Supercluster', centerX - 150, 30);
-      ctx.fillText('Void', centerX + 150, 30);
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      if (animationId) cancelAnimationFrame(animationId);
-    };
+        renderer.dispose();
+      };
+    });
   }, [isRRT]);
 
   return (
-    <div style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
-      <canvas
-        ref={canvasRef}
-        width={600}
-        height={350}
+    <div style={{ position: 'relative', width: '100%', maxWidth: '700px', margin: '0 auto' }}>
+      <div
+        ref={containerRef}
         style={{
-          border: '1px solid rgba(0, 255, 255, 0.3)',
-          borderRadius: '8px',
-          display: 'block',
-          backgroundColor: '#0a0e27',
+          width: '100%',
+          height: '500px',
+          borderRadius: '12px',
+          border: '2px solid rgba(0, 255, 255, 0.4)',
+          overflow: 'hidden',
+          cursor: isDraggingRef.current ? 'grabbing' : 'grab',
         }}
       />
-      <div style={{
-        position: 'absolute',
-        top: '10px',
-        left: '10px',
-        backgroundColor: 'rgba(10, 14, 39, 0.9)',
-        border: '1px solid rgba(0, 255, 255, 0.5)',
-        borderRadius: '6px',
-        padding: '10px',
-        fontFamily: 'monospace',
-        fontSize: '11px',
-        color: '#00ffff',
-      }}>
-        <div style={{ fontWeight: 'bold' }}>Void Cosmology (DESI)</div>
-        <div style={{ marginTop: '5px', fontSize: '10px' }}>H₀ Variation via BNP</div>
-      </div>
-      <button
-        onClick={() => setIsRRT(!isRRT)}
+
+      <div
         style={{
           position: 'absolute',
-          bottom: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          padding: '8px 16px',
-          backgroundColor: isRRT ? '#00ffff' : '#ff6b35',
-          color: '#0a0e27',
-          border: 'none',
-          borderRadius: '6px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          fontSize: '12px',
+          top: '15px',
+          left: '15px',
+          backgroundColor: 'rgba(10, 14, 39, 0.95)',
+          border: '2px solid rgba(0, 255, 255, 0.6)',
+          borderRadius: '8px',
+          padding: '12px',
+          fontFamily: 'monospace',
+          fontSize: '11px',
+          color: '#00ffff',
+          maxWidth: '280px',
         }}
       >
-        {isRRT ? 'RRT: Variable H₀' : 'ΛCDM: Uniform H₀'}
-      </button>
+        <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '12px' }}>
+          Void Cosmology (DESI)
+        </div>
+        <div style={{ color: '#a855f7', marginBottom: '6px', fontSize: '10px' }}>
+          H₀ Variation via BNP
+        </div>
+        <div style={{ color: '#fbbf24', fontSize: '10px', lineHeight: '1.4' }}>
+          {isRRT ? (
+            <>
+              <strong>RRT:</strong> H₀,void &gt; H₀,cluster
+            </>
+          ) : (
+            <>
+              <strong>ΛCDM:</strong> Uniform H₀
+            </>
+          )}
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          top: '15px',
+          right: '15px',
+          backgroundColor: isRRT ? 'rgba(0, 255, 255, 0.15)' : 'rgba(255, 107, 53, 0.15)',
+          border: `2px solid ${isRRT ? '#00ffff' : '#ff6b35'}`,
+          borderRadius: '8px',
+          padding: '8px 12px',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          fontWeight: 'bold',
+          color: isRRT ? '#00ffff' : '#ff6b35',
+        }}
+      >
+        {isRRT ? '🔷 Variable' : '🔶 Uniform'}
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '15px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          display: 'flex',
+          gap: '10px',
+          alignItems: 'center',
+        }}
+      >
+        <span style={{ color: '#a1a1aa', fontSize: '11px', fontFamily: 'monospace' }}>
+          Drag · Scroll to zoom
+        </span>
+        <button
+          onClick={() => setIsRRT(!isRRT)}
+          style={{
+            padding: '8px 16px',
+            backgroundColor: isRRT ? '#00ffff' : '#ff6b35',
+            color: '#0a0e27',
+            border: 'none',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            fontSize: '12px',
+          }}
+        >
+          {isRRT ? 'RRT' : 'ΛCDM'}
+        </button>
+      </div>
     </div>
   );
 }
