@@ -1,173 +1,118 @@
-'use client';
-import React, { useState, useRef, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Points } from '@react-three/drei';
-import * as THREE from 'three';
+import { useRef, useEffect, useState } from 'react';
 
-function StarField({ isRRT }) {
-  const meshRef = useRef();
-  const positionRef = useRef();
+export default function CosmicShearSimulation() {
+  const canvasRef = useRef(null);
+  const [isRRT, setIsRRT] = useState(true);
   const timeRef = useRef(0);
 
   useEffect(() => {
-    const count = 3000;
-    const positions = new Float32Array(count * 3);
-    
-    for (let i = 0; i < count * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 200;
-      positions[i + 1] = (Math.random() - 0.5) * 200;
-      positions[i + 2] = (Math.random() - 0.5) * 200;
-    }
-    
-    positionRef.current = positions;
-    
-    if (meshRef.current?.geometry) {
-      meshRef.current.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    }
-  }, []);
+    if (!canvasRef.current) return;
 
-  useFrame(() => {
-    timeRef.current += 0.001;
-    
-    if (!meshRef.current?.geometry) return;
-    
-    const positions = meshRef.current.geometry.attributes.position.array;
-    const originalPositions = positionRef.current;
-    
-    for (let i = 0; i < positions.length; i += 3) {
-      const x = originalPositions[i];
-      const y = originalPositions[i + 1];
-      const z = originalPositions[i + 2];
-      const dist = Math.sqrt(x * x + y * y + z * z);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const animate = () => {
+      timeRef.current += 0.016;
       
-      if (isRRT) {
-        const angle = Math.atan2(y, x) + timeRef.current * 0.5;
-        const twist = Math.sin(dist * 0.05 + timeRef.current) * 0.1;
-        positions[i] = (x + Math.cos(angle) * twist);
-        positions[i + 1] = (y + Math.sin(angle) * twist);
-        positions[i + 2] = z + Math.sin(timeRef.current + dist * 0.02) * 0.5;
-      } else {
-        const noiseX = Math.sin(x * 0.1 + timeRef.current) * Math.cos(y * 0.1);
-        const noiseY = Math.cos(y * 0.1 + timeRef.current) * Math.sin(z * 0.1);
-        const noiseZ = Math.sin(z * 0.1 + timeRef.current) * Math.cos(x * 0.1);
-        positions[i] = x + noiseX * 2;
-        positions[i + 1] = y + noiseY * 2;
-        positions[i + 2] = z + noiseZ * 2;
+      ctx.fillStyle = '#0a0e27';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      // Draw stars
+      ctx.fillStyle = isRRT ? 'rgba(0, 255, 255, 0.7)' : 'rgba(255, 107, 53, 0.7)';
+      for (let i = 0; i < 200; i++) {
+        const angle = (i / 200) * Math.PI * 2 + timeRef.current;
+        const radius = 50 + Math.sin(i * 0.1 + timeRef.current) * 20;
+        
+        if (isRRT) {
+          // RRT: Smooth laminar rotation
+          const x = centerX + Math.cos(angle) * radius;
+          const y = centerY + Math.sin(angle) * radius;
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        } else {
+          // ΛCDM: Chaotic scatter
+          const chaos = Math.sin(i * 0.5 + timeRef.current * 2) * 30;
+          const x = centerX + Math.cos(angle) * (radius + chaos);
+          const y = centerY + Math.sin(angle) * (radius + chaos);
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
       }
-    }
-    
-    meshRef.current.geometry.attributes.position.needsUpdate = true;
-  });
+
+      // Draw shear field lines
+      ctx.strokeStyle = isRRT ? 'rgba(0, 255, 255, 0.3)' : 'rgba(255, 107, 53, 0.3)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 6; i++) {
+        const phase = isRRT ? timeRef.current * 0.5 : timeRef.current * 2;
+        const amplitude = isRRT ? 10 : 20;
+        
+        ctx.beginPath();
+        for (let x = 0; x < canvas.width; x += 10) {
+          const y = centerY + Math.sin((x + phase) * 0.01) * amplitude;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, [isRRT]);
 
   return (
-    <Points ref={meshRef} stride={3}>
-      <pointsMaterial size={0.5} color={isRRT ? '#00ffff' : '#ff6b35'} />
-    </Points>
-  );
-}
-
-function ShearPlane({ isRRT }) {
-  const shaderMaterial = useRef();
-  
-  useFrame(() => {
-    if (shaderMaterial.current) {
-      shaderMaterial.current.uniforms.uTime.value += 0.016;
-    }
-  });
-
-  return (
-    <mesh position={[0, 0, 0]}>
-      <planeGeometry args={[100, 100, 64, 64]} />
-      <shaderMaterial
-        ref={shaderMaterial}
-        uniforms={{
-          uTime: { value: 0 },
-          uIsRRT: { value: isRRT ? 1 : 0 },
+    <div style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+      <canvas
+        ref={canvasRef}
+        width={600}
+        height={400}
+        style={{
+          border: '1px solid rgba(0, 255, 255, 0.3)',
+          borderRadius: '8px',
+          display: 'block',
+          backgroundColor: '#0a0e27',
         }}
-        vertexShader={`
-          varying vec2 vUv;
-          uniform float uTime;
-          uniform float uIsRRT;
-          
-          void main() {
-            vUv = uv;
-            vec3 pos = position;
-            
-            if (uIsRRT > 0.5) {
-              float twist = sin(uv.x * 3.14159 + uTime) * cos(uv.y * 3.14159) * 3.0;
-              pos.z += twist;
-            } else {
-              float chaos = sin(uv.x * 10.0 + uTime * 2.0) * cos(uv.y * 10.0 + uTime);
-              pos.z += chaos * 5.0;
-            }
-            
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-          }
-        `}
-        fragmentShader={`
-          varying vec2 vUv;
-          
-          void main() {
-            gl_FragColor = vec4(vUv.x * 0.5 + 0.2, vUv.y * 0.5 + 0.2, 0.8, 0.3);
-          }
-        `}
-        transparent
       />
-    </mesh>
-  );
-}
-
-export default function CosmicShearSimulation() {
-  const [isRRT, setIsRRT] = useState(true);
-
-  return (
-    <div style={{ width: '100%', height: '500px', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.2)' }}>
-      <Canvas camera={{ position: [0, 0, 50], fov: 75 }}>
-        <color attach="background" args={['#0a0e27']} />
-        <StarField isRRT={isRRT} />
-        <ShearPlane isRRT={isRRT} />
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={2} />
-      </Canvas>
-      
       <div style={{
         position: 'absolute',
-        top: '20px',
-        left: '20px',
-        backgroundColor: 'rgba(10, 14, 39, 0.8)',
+        top: '10px',
+        left: '10px',
+        backgroundColor: 'rgba(10, 14, 39, 0.9)',
         border: '1px solid rgba(0, 255, 255, 0.5)',
-        borderRadius: '8px',
-        padding: '15px',
+        borderRadius: '6px',
+        padding: '10px',
         fontFamily: 'monospace',
-        fontSize: '12px',
+        fontSize: '11px',
         color: '#00ffff',
-        zIndex: 10
       }}>
-        <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>COSMIC SHEAR (Euclid)</div>
-        <div>γ(θ,z) = γ_ISO[1 + A_T cos(2φ)]</div>
-        <div style={{ marginTop: '8px', color: '#fbbf24' }}>A_T(z=0.5) = 0.074 ± 0.008</div>
-        <div style={{ marginTop: '8px', color: isRRT ? '#10b981' : '#ef4444' }}>
-          {isRRT ? 'RRT: Laminar' : 'ΛCDM: Chaotic'}
-        </div>
+        <div style={{ fontWeight: 'bold' }}>Cosmic Shear (Euclid)</div>
+        <div style={{ marginTop: '5px', fontSize: '10px' }}>γ(θ,z) = γ_ISO[1 + A_T cos(2φ)]</div>
       </div>
-
       <button
         onClick={() => setIsRRT(!isRRT)}
         style={{
           position: 'absolute',
-          bottom: '20px',
+          bottom: '10px',
           left: '50%',
           transform: 'translateX(-50%)',
-          padding: '10px 20px',
+          padding: '8px 16px',
           backgroundColor: isRRT ? '#00ffff' : '#ff6b35',
           color: '#0a0e27',
           border: 'none',
           borderRadius: '6px',
           fontWeight: 'bold',
           cursor: 'pointer',
-          zIndex: 10,
+          fontSize: '12px',
         }}
       >
-        {isRRT ? 'RRT' : 'ΛCDM'}
+        {isRRT ? 'RRT: Laminar' : 'ΛCDM: Chaotic'}
       </button>
     </div>
   );

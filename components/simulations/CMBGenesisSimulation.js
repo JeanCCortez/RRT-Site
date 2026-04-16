@@ -1,159 +1,130 @@
-'use client';
-import React, { useState, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Points } from '@react-three/drei';
-import * as THREE from 'three';
-
-function PrimordialPlasma({ isRRT }) {
-  const meshRef = useRef();
-  const particlesRef = useRef([]);
-  const timeRef = useRef(0);
-
-  React.useEffect(() => {
-    const count = 5000;
-    const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    
-    particlesRef.current = [];
-    
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * 40;
-      const height = (Math.random() - 0.5) * 80;
-      
-      positions[i * 3] = Math.cos(angle) * radius;
-      positions[i * 3 + 1] = height;
-      positions[i * 3 + 2] = Math.sin(angle) * radius;
-      
-      const temp = Math.random();
-      colors[i * 3] = temp > 0.5 ? 1 : 0.2;
-      colors[i * 3 + 1] = 0.3;
-      colors[i * 3 + 2] = temp < 0.5 ? 1 : 0.2;
-      
-      particlesRef.current.push({ x: positions[i * 3], y: positions[i * 3 + 1], z: positions[i * 3 + 2], temp });
-    }
-    
-    if (meshRef.current?.geometry) {
-      meshRef.current.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      meshRef.current.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    }
-  }, []);
-
-  useFrame(() => {
-    timeRef.current += 0.01;
-    
-    if (!meshRef.current?.geometry) return;
-    
-    const positions = meshRef.current.geometry.attributes.position.array;
-    
-    for (let i = 0; i < particlesRef.current.length; i++) {
-      const particle = particlesRef.current[i];
-      const dist = Math.sqrt(particle.x * particle.x + particle.y * particle.y + particle.z * particle.z);
-      
-      if (isRRT) {
-        const causalAxis = Math.sin(timeRef.current * 0.5);
-        const causalVector = new THREE.Vector3(
-          Math.cos(timeRef.current * 0.3) * 0.1,
-          causalAxis * 0.2,
-          Math.sin(timeRef.current * 0.3) * 0.1
-        );
-        
-        const alignment = particle.temp * 0.3;
-        positions[i * 3] = particle.x + causalVector.x * alignment;
-        positions[i * 3 + 1] = particle.y + causalVector.y * alignment + (dist / 40) * timeRef.current * 0.5;
-        positions[i * 3 + 2] = particle.z + causalVector.z * alignment;
-      } else {
-        const expansion = (1 + timeRef.current * 0.3) * (1 + Math.sin(timeRef.current + particle.temp) * 0.2);
-        positions[i * 3] = particle.x * expansion * (1 + Math.sin(timeRef.current * particle.temp) * 0.1);
-        positions[i * 3 + 1] = particle.y * expansion * (1 + Math.cos(timeRef.current * particle.temp) * 0.1);
-        positions[i * 3 + 2] = particle.z * expansion * (1 + Math.sin(timeRef.current * 2 * particle.temp) * 0.1);
-      }
-    }
-    
-    meshRef.current.geometry.attributes.position.needsUpdate = true;
-  });
-
-  return (
-    <Points ref={meshRef}>
-      <pointsMaterial size={0.8} vertexColors sizeAttenuation />
-    </Points>
-  );
-}
-
-function CausalVector({ isRRT }) {
-  const groupRef = useRef();
-
-  useFrame(() => {
-    if (groupRef.current && isRRT) {
-      groupRef.current.rotation.x += 0.005;
-      groupRef.current.rotation.z += 0.003;
-    }
-  });
-
-  return (
-    <group ref={groupRef}>
-      <mesh position={[0, 0, 0]}>
-        <cylinderGeometry args={[1, 1, 40, 32]} />
-        <meshPhongMaterial emissive={isRRT ? '#00ff00' : '#333333'} color={isRRT ? '#00ff00' : '#666666'} />
-      </mesh>
-    </group>
-  );
-}
+import { useRef, useEffect, useState } from 'react';
 
 export default function CMBGenesisSimulation() {
+  const canvasRef = useRef(null);
   const [isRRT, setIsRRT] = useState(true);
+  const timeRef = useRef(0);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const animate = () => {
+      timeRef.current += 0.016;
+      
+      ctx.fillStyle = '#0a0e27';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      if (isRRT) {
+        // RRT: Particles align to causal vector (green axis in center)
+        ctx.strokeStyle = 'rgba(0, 255, 0, 0.5)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY - 80);
+        ctx.lineTo(centerX, centerY + 80);
+        ctx.stroke();
+
+        // Hot particles (red) align upward
+        ctx.fillStyle = 'rgba(255, 100, 100, 0.8)';
+        for (let i = 0; i < 150; i++) {
+          const angle = Math.random() * Math.PI * 0.3 - Math.PI * 0.15;
+          const dist = 20 + Math.sin(i * 0.05 + timeRef.current * 0.5) * 60;
+          const x = centerX + Math.cos(angle) * dist;
+          const y = centerY - dist * 0.5;
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+
+        // Cold particles (blue) align downward
+        ctx.fillStyle = 'rgba(100, 150, 255, 0.8)';
+        for (let i = 0; i < 150; i++) {
+          const angle = Math.random() * Math.PI * 0.3 - Math.PI * 0.15;
+          const dist = 20 + Math.sin(i * 0.05 + timeRef.current * 0.5) * 60;
+          const x = centerX + Math.cos(angle) * dist;
+          const y = centerY + dist * 0.5;
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+      } else {
+        // ΛCDM: Isotropic thermal expansion
+        ctx.fillStyle = 'rgba(150, 150, 150, 0.6)';
+        const expansion = 1 + Math.sin(timeRef.current * 0.5) * 0.2;
+        
+        for (let i = 0; i < 300; i++) {
+          const angle = (i / 300) * Math.PI * 2;
+          const baseRadius = 40;
+          const radius = baseRadius * expansion + Math.sin(i * 0.1 + timeRef.current) * 15;
+          
+          const temp = Math.random();
+          ctx.fillStyle = temp > 0.5 ? 'rgba(255, 100, 100, 0.6)' : 'rgba(100, 150, 255, 0.6)';
+          
+          const x = centerX + Math.cos(angle) * radius;
+          const y = centerY + Math.sin(angle) * radius;
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+      }
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, [isRRT]);
 
   return (
-    <div style={{ width: '100%', height: '500px', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.2)' }}>
-      <Canvas camera={{ position: [0, 50, 50], fov: 75 }}>
-        <color attach="background" args={['#0a0e27']} />
-        <ambientLight intensity={0.6} />
-        <pointLight position={[30, 30, 30]} intensity={1} color="#00ffff" />
-        <PrimordialPlasma isRRT={isRRT} />
-        <CausalVector isRRT={isRRT} />
-        <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={1} />
-      </Canvas>
-      
+    <div style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+      <canvas
+        ref={canvasRef}
+        width={600}
+        height={400}
+        style={{
+          border: '1px solid rgba(0, 255, 255, 0.3)',
+          borderRadius: '8px',
+          display: 'block',
+          backgroundColor: '#0a0e27',
+        }}
+      />
       <div style={{
         position: 'absolute',
-        top: '20px',
-        right: '20px',
-        backgroundColor: 'rgba(10, 14, 39, 0.8)',
+        top: '10px',
+        right: '10px',
+        backgroundColor: 'rgba(10, 14, 39, 0.9)',
         border: '1px solid rgba(0, 255, 255, 0.5)',
-        borderRadius: '8px',
-        padding: '15px',
+        borderRadius: '6px',
+        padding: '10px',
         fontFamily: 'monospace',
-        fontSize: '12px',
+        fontSize: '11px',
         color: '#00ffff',
-        zIndex: 10,
-        textAlign: 'right'
+        textAlign: 'right',
       }}>
-        <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>CMB GENESIS (CMB-S4)</div>
-        <div>Alignment: {isRRT ? '98.36%' : '23.4%'}</div>
-        <div style={{ marginTop: '8px', color: '#fbbf24' }}>h_* = 0.015 ± 0.003</div>
-        <div style={{ marginTop: '8px', color: isRRT ? '#10b981' : '#ef4444' }}>
-          {isRRT ? 'Causal SSB' : 'Thermal'}
-        </div>
+        <div style={{ fontWeight: 'bold' }}>CMB Genesis (CMB-S4)</div>
+        <div style={{ marginTop: '5px', fontSize: '10px' }}>Alignment: {isRRT ? '98.36%' : '23.4%'}</div>
       </div>
-
       <button
         onClick={() => setIsRRT(!isRRT)}
         style={{
           position: 'absolute',
-          bottom: '20px',
+          bottom: '10px',
           left: '50%',
           transform: 'translateX(-50%)',
-          padding: '10px 20px',
+          padding: '8px 16px',
           backgroundColor: isRRT ? '#00ffff' : '#ff6b35',
           color: '#0a0e27',
           border: 'none',
           borderRadius: '6px',
           fontWeight: 'bold',
           cursor: 'pointer',
-          zIndex: 10,
+          fontSize: '12px',
         }}
       >
-        {isRRT ? 'RRT' : 'ΛCDM'}
+        {isRRT ? 'RRT: SSB' : 'ΛCDM: Isotropic'}
       </button>
     </div>
   );

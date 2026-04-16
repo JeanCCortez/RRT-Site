@@ -309,6 +309,12 @@ export default function Predictions() {
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [scenario, setScenario] = useState('A');
+  
+  // States para abrir/fechar simulações
+  const [showCosmicShear, setShowCosmicShear] = useState(false);
+  const [showCMBGenesis, setShowCMBGenesis] = useState(false);
+  const [showVoidCosmology, setShowVoidCosmology] = useState(false);
+  const [showCausalFatigue, setShowCausalFatigue] = useState(false);
 
   // Dados EXATOS do Volume 3, página 270
   const streams = [
@@ -619,11 +625,29 @@ export default function Predictions() {
                 </p>
               </div>
 
-              <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Cosmic Shear Field</h4>
-                <CosmicShearSimulation />
-                <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Toggle between RRT (laminar torsion) and ΛCDM (chaotic scatter)</p>
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <button
+                  onClick={() => setShowCosmicShear(!showCosmicShear)}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#00ffff',
+                    color: '#0a0e27',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  {showCosmicShear ? 'Hide' : 'Show'} Interactive Simulation: Cosmic Shear
+                </button>
               </div>
+
+              {showCosmicShear && (
+                <div style={{ marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)' }}>
+                  <CosmicShearSimulation />
+                </div>
+              )}
 
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">CMB-S4: Low Multipole Angular Gradient</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -635,11 +659,29 @@ export default function Predictions() {
                 <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>Angular gradient in low multipoles (ell less than 20)</p>
               </div>
 
-              <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Primordial Plasma Genesis</h4>
-                <CMBGenesisSimulation />
-                <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Toggle between RRT (Spontaneous Symmetry Breaking with causal alignment) and ΛCDM (isotropic thermal expansion)</p>
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <button
+                  onClick={() => setShowCMBGenesis(!showCMBGenesis)}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#00ffff',
+                    color: '#0a0e27',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  {showCMBGenesis ? 'Hide' : 'Show'} Interactive Simulation: Primordial Plasma Genesis
+                </button>
               </div>
+
+              {showCMBGenesis && (
+                <div style={{ marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)' }}>
+                  <CMBGenesisSimulation />
+                </div>
+              )}
 
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">VLBI: Direct Measurement of Cosmic Rotation</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -671,11 +713,29 @@ export default function Predictions() {
                 <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>K_eff approximately 1 (perfect RRT agreement)</p>
               </div>
 
-              <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
-                <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Cosmic Web & Void Expansion</h4>
-                <VoidCosmologySimulation />
-                <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Green (Supercluster): Stagnation via Baryonic Neutrality | Blue (Void): Accelerated expansion</p>
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <button
+                  onClick={() => setShowVoidCosmology(!showVoidCosmology)}
+                  style={{
+                    padding: '10px 20px',
+                    backgroundColor: '#00ffff',
+                    color: '#0a0e27',
+                    border: 'none',
+                    borderRadius: '6px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                  }}
+                >
+                  {showVoidCosmology ? 'Hide' : 'Show'} Interactive Simulation: Cosmic Web & Void Expansion
+                </button>
               </div>
+
+              {showVoidCosmology && (
+                <div style={{ marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)' }}>
+                  <VoidCosmologySimulation />
+                </div>
+              )}
 
               <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Physical Mechanism</h3>
               <p className="text-justify leading-relaxed text-lg mb-4">
@@ -683,25 +743,43 @@ export default function Predictions() {
               </p>
             </section>
 
-          {/* LIGO/LISA Gravitational Waves */}
+          {/* Gravitational Waves Section */}
           <section className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mb-10">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Gravitational Wave Astronomy (LIGO O4 / LISA): Causal Fatigue Signature</h2>
+            <h2 className="text-2xl font-bold mb-6 text-gray-900 border-b pb-2">Gravitational Wave Astronomy (LIGO O4): Causal Fatigue</h2>
             
-            <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Astrophysical Predictions</h3>
+            <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Black Hole Mergers & Wave Propagation</h3>
             <p className="text-justify leading-relaxed text-lg mb-4">
-              Black hole mergers emit both electromagnetic and gravitational radiation. RRT predicts that gravitational waves interact with the causal field asymmetrically: while electromagnetic waves traverse unimpeded, gravitational waves experience progressive attenuation and frequency degradation through "Causal Fatigue."
+              During black hole mergers, both electromagnetic radiation and gravitational waves are emitted. RRT predicts that gravitational waves experience "Causal Fatigue" - progressive attenuation and frequency degradation as they interact with the temporal field structure during propagation to Earth.
             </p>
-            
+
             <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', padding: '1.5rem', marginBottom: '2rem', fontFamily: 'monospace' }}>
-              <p style={{ margin: 0, color: '#ef4444' }}>D_L^GW ≠ D_L^EM (Non-Standard Candle Anomaly)</p>
-              <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>Divergence expected: 15-25% over cosmological distances</p>
+              <p style={{ margin: 0, color: '#ef4444' }}>D_L^GW ≠ D_L^EM (Luminosity Distance Discrepancy)</p>
+              <p style={{ margin: '0.5rem 0 0 0', color: '#a1a1aa', fontSize: '0.9rem' }}>Expected divergence: 15-25% for cosmological sources</p>
             </div>
 
-            <div style={{ marginBottom: '2rem', marginTop: '2rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)', padding: '1.5rem' }}>
-              <h4 style={{ margin: '0 0 1rem 0', color: '#00ffff', fontWeight: 'bold', textAlign: 'center' }}>Interactive Simulation: Causal Fatigue in Gravitational Waves</h4>
-              <CausalFatigueSimulation />
-              <p style={{ margin: '1rem 0 0 0', textAlign: 'center', fontSize: '0.85rem', color: '#a1a1aa' }}>Yellow (EM): Constant frequency | Blue (GW): Progressive frequency decrease and amplitude loss</p>
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <button
+                onClick={() => setShowCausalFatigue(!showCausalFatigue)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#00ffff',
+                  color: '#0a0e27',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                }}
+              >
+                {showCausalFatigue ? 'Hide' : 'Show'} Interactive Simulation: Causal Fatigue
+              </button>
             </div>
+
+            {showCausalFatigue && (
+              <div style={{ marginBottom: '2rem', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 255, 255, 0.3)', backgroundColor: 'rgba(0, 255, 255, 0.02)' }}>
+                <CausalFatigueSimulation />
+              </div>
+            )}
           </section>
 
           {/* Closing Statement */}

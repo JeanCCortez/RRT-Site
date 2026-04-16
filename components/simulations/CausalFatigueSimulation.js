@@ -1,198 +1,155 @@
-'use client';
-import React, { useState, useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
-
-function WaveParticles({ isEM, timeRef }) {
-  const meshRef = useRef();
-
-  React.useEffect(() => {
-    const count = 200;
-    const positions = new Float32Array(count * 3);
-    
-    for (let i = 0; i < count; i++) {
-      positions[i * 3] = -40 + (i / count) * 80;
-      positions[i * 3 + 1] = isEM ? 10 : -10;
-      positions[i * 3 + 2] = Math.sin(i * 0.1) * 5;
-    }
-    
-    if (meshRef.current?.geometry) {
-      meshRef.current.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    }
-  }, [isEM]);
-
-  useFrame(() => {
-    if (!meshRef.current?.geometry) return;
-    
-    const positions = meshRef.current.geometry.attributes.position.array;
-    const time = timeRef.current.value;
-    
-    for (let i = 0; i < positions.length; i += 3) {
-      const x = -40 + (i / 3 / 200) * 80;
-      
-      if (isEM) {
-        positions[i + 1] = 10 + Math.sin((x + time) * 0.1) * 3;
-      } else {
-        const fatigue = Math.max(0.3, 1 - (x + 40) / 80 * 0.7);
-        const frequency = 0.08 * fatigue;
-        const amplitude = 3 * fatigue;
-        const phase = (x + time * 0.5) * frequency;
-        positions[i + 1] = -10 + Math.sin(phase) * amplitude;
-      }
-    }
-    
-    meshRef.current.geometry.attributes.position.needsUpdate = true;
-  });
-
-  return (
-    <mesh ref={meshRef}>
-      <bufferGeometry />
-      <lineBasicMaterial color={isEM ? '#fbbf24' : '#3b82f6'} linewidth={3} fog={false} />
-    </mesh>
-  );
-}
-
-function Detector({ timeRef }) {
-  const alertRef = useRef(0);
-  
-  useFrame(() => {
-    alertRef.current = (Math.sin(timeRef.current.value * 3) + 1) / 2;
-  });
-
-  return (
-    <mesh position={[40, 0, 0]}>
-      <sphereGeometry args={[3, 32, 32]} />
-      <meshPhongMaterial color="#ff6b35" emissive="#ff6b35" emissiveIntensity={alertRef.current * 0.8} />
-    </mesh>
-  );
-}
+import { useRef, useEffect, useState } from 'react';
 
 export default function CausalFatigueSimulation() {
-  const timeRef = useRef({ value: 0 });
-  const [divergence, setDivergence] = useState(23);
+  const canvasRef = useRef(null);
+  const timeRef = useRef(0);
 
-  useFrame(() => {
-    timeRef.current.value += 0.016;
-    setDivergence(20 + Math.sin(timeRef.current.value * 0.5) * 5);
-  });
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const animate = () => {
+      timeRef.current += 0.016;
+      
+      ctx.fillStyle = '#0a0e27';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const startX = 50;
+      const endX = canvas.width - 50;
+      const emY = canvas.height / 2 - 50;
+      const gwY = canvas.height / 2 + 50;
+
+      // Draw source (Black Hole Merger)
+      ctx.fillStyle = '#a855f7';
+      ctx.beginPath();
+      ctx.arc(startX, canvas.height / 2, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#a1a1aa';
+      ctx.font = '11px monospace';
+      ctx.fillText('BH Merger', startX - 20, canvas.height / 2 + 25);
+
+      // Draw detector (LIGO)
+      const detectorSize = 8 + Math.sin(timeRef.current * 3) * 3;
+      ctx.fillStyle = '#ff6b35';
+      ctx.beginPath();
+      ctx.arc(endX, canvas.height / 2, detectorSize, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#a1a1aa';
+      ctx.fillText('LIGO', endX - 15, canvas.height / 2 + 25);
+
+      // EM Wave (Yellow) - Constant frequency
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      for (let x = startX; x <= endX; x += 5) {
+        const progress = (x - startX) / (endX - startX);
+        const phase = (x - timeRef.current * 100) * 0.02;
+        const y = emY + Math.sin(phase) * 15;
+        
+        if (x === startX) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '10px monospace';
+      ctx.fillText('EM: λ constant', startX + 20, emY - 25);
+
+      // GW Wave (Blue) - Progressive attenuation (fatiga causal)
+      ctx.strokeStyle = '#3b82f6';
+      ctx.beginPath();
+
+      for (let x = startX; x <= endX; x += 5) {
+        const progress = (x - startX) / (endX - startX);
+        
+        // Causal fatigue: frequency decreases, amplitude decreases
+        const fatigue = Math.max(0.2, 1 - progress * 0.7);
+        const frequency = 0.02 * fatigue;
+        const amplitude = 15 * fatigue;
+        const phase = (x - timeRef.current * 50) * frequency;
+        const y = gwY + Math.sin(phase) * amplitude;
+        
+        if (x === startX) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = '#3b82f6';
+      ctx.fillText('GW: λ → ∞ (Fatigued)', startX + 20, gwY + 25);
+
+      // Draw phase lag indicator
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(endX - 80, emY);
+      ctx.lineTo(endX - 80, gwY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#ef4444';
+      ctx.font = 'bold 11px monospace';
+      ctx.fillText('Phase Lag', endX - 120, canvas.height / 2);
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    };
+  }, []);
 
   return (
-    <div style={{ width: '100%', height: '500px', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 255, 255, 0.2)' }}>
-      <Canvas camera={{ position: [0, 0, 50], fov: 75 }}>
-        <color attach="background" args={['#0a0e27']} />
-        <ambientLight intensity={0.6} />
-        <pointLight position={[-40, 0, 30]} intensity={0.8} color="#fbbf24" />
-        <pointLight position={[-40, 0, -30]} intensity={0.8} color="#3b82f6" />
-        <pointLight position={[40, 0, 0]} intensity={1} color="#ff6b35" />
-        
-        <mesh position={[-40, 0, 0]}>
-          <sphereGeometry args={[2, 32, 32]} />
-          <meshPhongMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={0.5} />
-        </mesh>
-        
-        <WaveParticles isEM={true} timeRef={timeRef} />
-        <WaveParticles isEM={false} timeRef={timeRef} />
-        
-        <Detector timeRef={timeRef} />
-      </Canvas>
-      
+    <div style={{ position: 'relative', width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+      <canvas
+        ref={canvasRef}
+        width={600}
+        height={280}
+        style={{
+          border: '1px solid rgba(0, 255, 255, 0.3)',
+          borderRadius: '8px',
+          display: 'block',
+          backgroundColor: '#0a0e27',
+        }}
+      />
       <div style={{
         position: 'absolute',
-        top: '20px',
-        left: '20px',
-        backgroundColor: 'rgba(10, 14, 39, 0.8)',
-        border: '1px solid rgba(168, 85, 247, 0.5)',
-        borderRadius: '8px',
-        padding: '12px',
+        top: '10px',
+        left: '10px',
+        backgroundColor: 'rgba(10, 14, 39, 0.9)',
+        border: '1px solid rgba(0, 255, 255, 0.5)',
+        borderRadius: '6px',
+        padding: '10px',
         fontFamily: 'monospace',
         fontSize: '11px',
-        color: '#a855f7',
-        zIndex: 10
+        color: '#00ffff',
       }}>
-        <div style={{ fontWeight: 'bold' }}>BH Merger</div>
-        <div>RA ≈ 168°</div>
+        <div style={{ fontWeight: 'bold' }}>Causal Fatigue (LIGO O4)</div>
+        <div style={{ marginTop: '5px', fontSize: '10px' }}>D_L^GW ≠ D_L^EM</div>
       </div>
-      
       <div style={{
         position: 'absolute',
-        top: '20px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(10, 14, 39, 0.8)',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
-        borderRadius: '8px',
-        padding: '12px',
-        fontFamily: 'monospace',
-        fontSize: '11px',
-        color: '#fbbf24',
-        zIndex: 10,
-        textAlign: 'center'
-      }}>
-        <div style={{ fontWeight: 'bold' }}>CORTEZ AXIS</div>
-        <div>RA = 168°</div>
-      </div>
-      
-      <div style={{
-        position: 'absolute',
-        top: '20px',
-        right: '20px',
-        backgroundColor: 'rgba(10, 14, 39, 0.8)',
-        border: '1px solid rgba(255, 107, 53, 0.5)',
-        borderRadius: '8px',
-        padding: '12px',
-        fontFamily: 'monospace',
-        fontSize: '11px',
-        color: '#ff6b35',
-        zIndex: 10,
-        textAlign: 'right'
-      }}>
-        <div style={{ fontWeight: 'bold' }}>LIGO O4</div>
-        <div style={{ color: '#ef4444', fontWeight: 'bold' }}>⚠ ALERT</div>
-      </div>
-      
-      <div style={{
-        position: 'absolute',
-        bottom: '60px',
+        bottom: '10px',
         left: '50%',
         transform: 'translateX(-50%)',
         backgroundColor: 'rgba(10, 14, 39, 0.9)',
-        border: '1px solid rgba(239, 68, 68, 0.7)',
-        borderRadius: '8px',
-        padding: '15px',
+        border: '1px solid rgba(239, 68, 68, 0.5)',
+        borderRadius: '6px',
+        padding: '8px',
         fontFamily: 'monospace',
-        fontSize: '12px',
+        fontSize: '10px',
         color: '#ef4444',
-        zIndex: 10,
         textAlign: 'center',
-        width: '90%',
-        maxWidth: '500px'
       }}>
-        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>CAUSAL FATIGUE</div>
-        <div>D_L^GW ≠ D_L^EM | Divergence: {divergence.toFixed(1)}%</div>
-        <div style={{ marginTop: '8px', color: '#fbbf24', fontSize: '11px' }}>
-          Yellow (EM): λ = 1550nm | Blue (GW): λ → ∞
-        </div>
+        Divergence: ~23% | GW Attenuation Active
       </div>
-
-      <button
-        onClick={() => {}}
-        style={{
-          position: 'absolute',
-          bottom: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          padding: '10px 20px',
-          backgroundColor: '#3b82f6',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '6px',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          zIndex: 10,
-        }}
-      >
-        Causal Fatigue Visualized
-      </button>
     </div>
   );
 }
