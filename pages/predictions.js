@@ -1,12 +1,10 @@
 ﻿import Layout from '../components/Layout';
 import Head from 'next/head';
 import { useState, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-
-const CosmicShearSimulation = dynamic(() => import('../components/simulations/CosmicShearSimulation'), { ssr: false });
-const CMBGenesisSimulation = dynamic(() => import('../components/simulations/CMBGenesisSimulation'), { ssr: false });
-const VoidCosmologySimulation = dynamic(() => import('../components/simulations/VoidCosmologySimulation'), { ssr: false });
-const CausalFatigueSimulation = dynamic(() => import('../components/simulations/CausalFatigueSimulation'), { ssr: false });
+import CosmicShearSimulation from '../components/simulations/CosmicShearSimulation';
+import CMBGenesisSimulation from '../components/simulations/CMBGenesisSimulation';
+import VoidCosmologySimulation from '../components/simulations/VoidCosmologySimulation';
+import CausalFatigueSimulation from '../components/simulations/CausalFatigueSimulation';
 
 function StreamAnimationCanvas({ stream }) {
   const canvasRef = useRef(null);
