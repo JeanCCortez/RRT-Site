@@ -12,7 +12,7 @@ export default function CosmicShearSimulation() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    import('three').then(({ default: THREE }) => {
+    import('three').then((THREE) => {
       if (!containerRef.current) return;
 
       const width = containerRef.current.clientWidth;
